@@ -30,7 +30,7 @@ notes, an exam study plan, quizzes with marking, and a live progress dashboard (
 - `canvas_agent/agents.py`: router + 4 agents (grades, planner, content, rules); structured-output tool loop; ungrounded-number check
 - `canvas_agent/progress.py`: deterministic progress % / overdue / next due / quiz marking
 - `canvas_agent/canvas_api.py`: read-only Canvas REST client (GET only, token auth, pagination)
-- `canvas_agent/ingest.py`: Canvas -> snapshot dict + syllabus discovery/download (PDF link, Modules, Syllabus HTML, user file)
+- `canvas_agent/ingest.py`: Canvas -> snapshot dict + syllabus discovery/download (PDF link, Modules, Syllabus HTML, user file); course-site URLs incl. redirect tools
 - `canvas_agent/prairielearn.py`: PrairieLearn normaliser (statuses, credit deadlines, redo/practice) + merge into Canvas gaps
 - `canvas_agent/connectors/prairielearn_collector.js`: runs in the student's signed-in PrairieLearn tab (GET only) -> `data/prairielearn_snapshot.json`
 - `canvas_agent/website.py`: polite same-site crawler (scopes, robots, caps, ETags), HTML->markdown with tables, PDFs, schedule rows, page-cited index + search

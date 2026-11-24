@@ -126,6 +126,8 @@ def post_process(code: str, report) -> None:
         conf_path = DATA / "confirmations.json"  # things the student confirmed, e.g. absences
         confirmed = json.loads(conf_path.read_text()).get(code, {}) if conf_path.exists() else {}
         att = attendance_check(checks, quotes, course, confirmed.get("absences"))
+        from canvas_agent.component_check import pass_requirement_checks
+        out["pass_requirements"] = [p.model_dump() for p in pass_requirement_checks(checks, report.rules)]
         out["attendance_check"] = att.model_dump() if att else None
         from canvas_agent.component_check import exam_date_hints
         out["exam_date_hints"] = [h.model_dump() for h in exam_date_hints(

@@ -37,13 +37,19 @@ precise grades, a unified tracker, notes, quizzes and exam plans. Use-case map: 
       rule-based plan, all-courses overview. Dashboard: All courses page + tabs Overview · Grades · Notes · Plan ·
       Deadlines · Sources. Agents simplified to 4 (grades, planner, content, rules) with the views as tools
 - [x] `docs/ARCHITECTURE.md`: data-flow and agents/tools diagrams
-- [x] 95 offline tests (fake Canvas server asserts GET-only; fake website; real Tesseract OCR test; CI installs Tesseract)
+- [x] Canvas redirect tools ("Course Website", "Course Book") resolved to real site URLs (`ingest.course_site_urls`);
+      a second course site crawled (MyST site + Quarto book; hashed `LecNN-<hash>.pdf` slides recognised); schedule
+      fallback ignores textbook data tables; deadline tables recognised by header meaning, not fixed names
+- [x] Grade rules: never-drop items ("excluding Homework 5"), active-voice drop wording, course abbreviations (HW,
+      MT) in matching, pass-requirement checks (combined weighted thresholds, needed on remaining), attendance
+      wording excluded from pass checks; index reuses extracted text for unchanged files (no repeated OCR)
+- [x] 103 offline tests (fake Canvas server asserts GET-only; fake website; real Tesseract OCR test; CI installs Tesseract)
 
 ## In progress
 - [ ] Nothing mid-edit.
 
 ## Next up
-1. Resolve course-website URLs that sit behind Canvas external-tool links, then crawl them and run the syllabus flow.
+1. Ask the student for exam dates the syllabus leaves open ("exam period") so the plan can schedule review.
 2. **Syllabus extraction eval**: where Canvas has group weights they are a free answer key; hand-label the rest.
 3. Repeatable pulls: Canvas token for `scripts.ingest_canvas`; re-run the PrairieLearn collector to refresh.
 4. **Quiz-generation eval** from practice exams that come with answer keys.
@@ -64,7 +70,7 @@ precise grades, a unified tracker, notes, quizzes and exam plans. Use-case map: 
 - 2026-11-23 Real course data only in gitignored `data/`; tests stay synthetic.
 
 ## Verification status
-- Tests: 95 passing, `.venv/bin/python -m pytest -q`, 2026-11-24
+- Tests: 103 passing, `.venv/bin/python -m pytest -q`, 2026-11-24
 - Grade engine: matches Canvas's own totals on every course where Canvas shows them; others hand-checked
 - Evals: live extraction runs reviewed by hand against Canvas and the source documents; no scored eval yet
 - Not verified: ClaudeClient against the real API; snapshot freshness (pulls are manual)

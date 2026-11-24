@@ -175,3 +175,32 @@ def test_user_file_uses_the_same_flow(tmp_path):
     src = source_from_user_file(p)
     assert src.kind == "pdf" and "provided by the user" in src.how
     assert "Final exam 50%" in load_pages(src)[0].text
+
+
+def test_redirect_tools_resolve_to_course_sites():
+    from canvas_agent.ingest import course_site_urls, custom_url_from_launch
+
+    launch_html = '<form><input type="hidden" name="custom_url" value="https://course.example.org/ml201/"></form>'
+    assert custom_url_from_launch(launch_html) == "https://course.example.org/ml201/"
+
+    def handler(req):
+        p = req.url.path
+        if p == "/api/v1/courses/7/tabs":
+            return httpx.Response(200, json=[{"type": "external", "label": "Course Website",
+                                              "html_url": "/courses/7/external_tools/70"},
+                                             {"type": "external", "label": "Quiz tool", "html_url": "/courses/7/external_tools/71"},
+                                             {"type": "internal", "label": "Grades", "html_url": "/courses/7/grades"}])
+        if p == "/api/v1/courses/7/external_tools/70":
+            return httpx.Response(200, json={"url": "https://www.edu-apps.org/redirect"})
+        if p == "/api/v1/courses/7/external_tools/71":
+            return httpx.Response(200, json={"url": "https://quiz.example.com/lti"})
+        if p == "/api/v1/courses/7/external_tools/sessionless_launch":
+            return httpx.Response(200, json={"url": f"{BASE}/launch/70"})
+        if p == "/launch/70":
+            return httpx.Response(200, text=launch_html)
+        return httpx.Response(404)
+
+    api = CanvasAPI(base_url=BASE, token="t", transport=httpx.MockTransport(handler))
+    sites = course_site_urls(api, 7, front_page_html='<a href="https://piazza.com/x">P</a> <a href="https://site.example.org/c/">Site</a>')
+    assert sites == [{"url": "https://site.example.org/c/", "how": "front page link"},
+                     {"url": "https://course.example.org/ml201/", "how": "redirect tool 'Course Website'"}]

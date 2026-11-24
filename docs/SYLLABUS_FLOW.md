@@ -120,3 +120,7 @@ Edge cases the runs exposed, and what changed:
 | Equal-weighted deliverables averaged by points | Equal weighting applied as stated (every item rescaled to the same points) |
 | Recheck duplicated rules on every run | Dedupe by component + kind + quote |
 | "Nov. 16" split into two sentences | Abbreviated months protected before sentence split |
+| Syllabus "Homework" did not match Canvas "HW" | Common course abbreviations expanded in name matching (HW, MT, ...) |
+| "We will drop your lowest homework grade" rejected; "Homework 5 is excluded from the drop" ignored | Active-voice singular drops count as 1; never-drop items parsed from the quote and protected by the grade engine |
+| Pass requirements left as text | Python checks them: weighted average of graded parts, average needed on the rest, status |
+| An attendance rule ("missing more than 20% of classes") read as a 20% grade requirement | Attendance-worded rules are excluded from pass checks (attendance has its own check) |

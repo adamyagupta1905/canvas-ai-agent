@@ -26,8 +26,14 @@ class ReconRow(BaseModel):
     similarity: float | None
 
 
+_ALIASES = {"hw": "homework", "hws": "homework", "mt": "midterm", "asst": "assignment", "assn": "assignment",
+            "proj": "project", "lab": "lab", "tut": "tutorial", "part": "participation", "fe": "final"}
+
+
 def _words(name: str) -> set[str]:
+    """Distinctive words, singular, with common course abbreviations expanded ('HW' -> 'homework')."""
     words = set(re.findall(r"[a-z]+", name.lower())) - _STOP
+    words = {_ALIASES.get(w, w) for w in words}
     return {w[:-1] if w.endswith("s") and len(w) > 3 else w for w in words}
 
 

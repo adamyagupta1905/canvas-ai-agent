@@ -17,7 +17,7 @@ from statistics import median
 
 from pydantic import BaseModel
 
-from canvas_agent.grades import _apply_drops
+from canvas_agent.grades import _apply_drops, _item_keys
 from canvas_agent.reconcile import ReconRow, _words
 from canvas_agent.syllabus_flow import ComponentRule, GradeComponent
 
@@ -85,6 +85,7 @@ class ComponentCheck(BaseModel):
     remaining_by_syllabus: int | None
     numbering_gaps: list[int]
     drop_syllabus: int | None
+    never_drop: list[str] = []  # item keys the syllabus says can never be dropped, e.g. ['hw5']
     drop_canvas: int | None
     aggregation_syllabus: str | None
     equal_points_in_canvas: bool
@@ -222,6 +223,8 @@ def check_components(components: list[GradeComponent], rules: list[ComponentRule
         if drop_syl is None and r_counted and r_counted.value is not None and expected:
             drop_syl = expected - int(r_counted.value)
         agg = r_agg.aggregation if r_agg else None
+        protect = sorted(never_drop_keys([r.source_quote for r in rules if r.component == comp.name]))
+        drop_rules = {"drop_lowest": drop_syl or 0, "never_drop_keys": protect}
 
         scored_pairs = [(float(it[4]), float(it[2] or 0), it[0]) for it in raw if it[4] is not None]
         pts = {float(it[2]) for it in raw if it[2]}
@@ -230,9 +233,9 @@ def check_components(components: list[GradeComponent], rules: list[ComponentRule
         canvas_kept, canvas_dropped = _apply_drops(scored_pairs, {"drop_lowest": canvas_drop or 0})
         if agg == "equal_weight":  # equal weighting == every item rescaled to the same points
             rescaled = [(s / p * 100, 100.0, n) for s, p, n in scored_pairs if p]
-            syl_kept, syl_dropped = _apply_drops(rescaled, {"drop_lowest": drop_syl or 0})
+            syl_kept, syl_dropped = _apply_drops(rescaled, drop_rules)
         else:
-            syl_kept, syl_dropped = _apply_drops(scored_pairs, {"drop_lowest": drop_syl or 0})
+            syl_kept, syl_dropped = _apply_drops(scored_pairs, drop_rules)
 
         items = [ItemRow(name=it[0], points=it[2], score=it[4],
                          pct=round(100 * it[4] / it[2], 1) if it[4] is not None and it[2] else None,
@@ -277,7 +280,7 @@ def check_components(components: list[GradeComponent], rules: list[ComponentRule
             items_in_canvas=len(raw), scored=len(scored_pairs), expected_items=expected,
             expected_source=expected_source, sessions_total=sessions_total,
             remaining_by_syllabus=(expected - len(scored_pairs)) if expected is not None else None,
-            numbering_gaps=gaps, drop_syllabus=drop_syl, drop_canvas=canvas_drop, aggregation_syllabus=agg,
+            numbering_gaps=gaps, drop_syllabus=drop_syl, never_drop=protect, drop_canvas=canvas_drop, aggregation_syllabus=agg,
             equal_points_in_canvas=equal_points, completion_based=bool(r_comp),
             avg_canvas_rules=a_c, avg_syllabus_rules=a_s, items=items, flags=flags,
             rules=[f"{r.kind}: {r.summary} (\"{r.source_quote}\", {r.chunk_id})" for r in rules if r.component == comp.name],
@@ -302,8 +305,10 @@ def syllabus_view_course(components: list[GradeComponent], checks: list[Componen
             typical = median([r[2] for r in rows if r[2]] or [0])
             rows += [[f"{comp.name} (not yet in Canvas) #{k + 1}", None, typical, "unsubmitted", None, False]
                      for k in range(chk.expected_items - len(rows))]
-        groups.append({"name": comp.name, "weight": comp.weight_pct,
-                       "rules": {"drop_lowest": chk.drop_syllabus} if chk.drop_syllabus else {}, "items": rows})
+        rules = {"drop_lowest": chk.drop_syllabus} if chk.drop_syllabus else {}
+        if rules and chk.never_drop:
+            rules["never_drop_keys"] = chk.never_drop
+        groups.append({"name": comp.name, "weight": comp.weight_pct, "rules": rules, "items": rows})
     return {"name": course.get("name", ""), "weighted": True, "omit_from_final": [], "groups": groups}
 
 
@@ -410,4 +415,69 @@ def past_exams_without_score(exams: list[dict], hints: list[dict], checks: list[
             where = f" Check {', '.join(tools)}." if tools else ""
             out.append(f"{comp.component} ({comp.syllabus_weight:g}%) was scheduled on or around {d} but has no score in Canvas or "
                        f"PrairieLearn yet.{where}")
+    return out
+
+
+_ITEM = r"(?:homework|hw|lab|quiz|assignment)\s*0*\d+"
+
+
+def never_drop_keys(quotes: list[str]) -> set[str]:
+    """'The lowest homework grade will be dropped, excluding Homework 5' -> {'hw5'}.
+    Also: 'Homework 5 cannot be dropped', 'except Lab 1 and Lab 2'."""
+    keys: set[str] = set()
+    for q in quotes:
+        for m in re.finditer(rf"(?:except|excluding|other than|not including|but not)\s+(?:for\s+)?((?:{_ITEM})(?:\s*(?:,|and|or)\s*(?:{_ITEM}|\d+))*)", q, re.I):
+            chunk = m.group(1)
+            base = re.match(r"(homework|hw|lab|quiz|assignment)", chunk, re.I).group(1)
+            keys |= _item_keys(re.sub(r"(?<=,|d|r)\s*(\d+)\b", lambda x: f" {base} {x.group(1)}", chunk))
+            keys |= _item_keys(chunk)
+        for m in re.finditer(rf"({_ITEM})\s+(?:cannot|can't|may not|will not|won't|is not allowed to)\s+be dropped", q, re.I):
+            keys |= _item_keys(m.group(1))
+        for m in re.finditer(rf"({_ITEM})\s+(?:is|are)\s+(?:excluded|exempt)\s+from\s+(?:the\s+)?drop", q, re.I):
+            keys |= _item_keys(m.group(1))
+    return keys
+
+
+class PassCheck(BaseModel):
+    components: list[str]
+    threshold_pct: float
+    current_pct: float | None  # weighted average of the graded parts so far
+    weight_graded: float
+    weight_remaining: float
+    needed_on_remaining_pct: float | None  # average needed on the ungraded parts to meet the threshold
+    status: str  # met | safe | on_track | at_risk | unknown
+    quote: str
+
+
+def pass_requirement_checks(checks: list[ComponentCheck], rules: list[ComponentRule]) -> list[PassCheck]:
+    """Pass requirements like 'at least 50% weighted average across midterms and final' or 'at least 40% homework
+    average'. Rules with the same quote are one requirement spanning those components. Python does the maths:
+    weighted average of graded components so far, and the average needed on ungraded ones (a component with some
+    graded work counts at its current average)."""
+    by_quote: dict[str, list[ComponentRule]] = {}
+    for r in rules:
+        if re.search(r"\bmiss|attend|absen|classes\b", r.source_quote, re.I):
+            continue  # attendance thresholds ('missing more than 20% of classes') are handled by attendance_check
+        if r.kind == "pass_requirement" and r.value is not None and 0 < r.value <= 100:
+            by_quote.setdefault(r.source_quote.strip().lower(), []).append(r)
+    out = []
+    for rs in by_quote.values():
+        names = list(dict.fromkeys(r.component for r in rs))
+        comps = [c for c in checks if c.component in names]
+        thr = rs[0].value
+        graded = [c for c in comps if c.avg_syllabus_rules is not None]
+        w_g = sum(c.syllabus_weight for c in graded)
+        w_r = sum(c.syllabus_weight for c in comps if c.avg_syllabus_rules is None)
+        cur = round(sum(c.syllabus_weight * c.avg_syllabus_rules for c in graded) / w_g, 2) if w_g else None
+        if cur is None:
+            need, status = None, "unknown"
+        elif w_r == 0:
+            partial = any(c.scored < max(c.items_in_canvas, c.expected_items or 0) for c in graded)
+            need = None
+            status = ("on_track" if partial else "met") if cur >= thr else "at_risk"  # work still to come: not final
+        else:
+            need = round((thr * (w_g + w_r) - cur * w_g) / w_r, 2)
+            status = "safe" if need <= 0 else ("at_risk" if need > 100 else "on_track")
+        out.append(PassCheck(components=names, threshold_pct=thr, current_pct=cur, weight_graded=w_g, weight_remaining=w_r,
+                             needed_on_remaining_pct=need, status=status, quote=rs[0].source_quote))
     return out

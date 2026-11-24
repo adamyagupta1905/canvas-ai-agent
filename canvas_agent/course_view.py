@@ -50,8 +50,18 @@ def parse_day(text: str, today: date) -> date | None:
 
 
 def parse_clock(text: str) -> time | None:
+    if re.search(r"\d\s*(am|pm)\b", text, re.I):
+        return _clock_ampm(text)
     m = re.search(r"\b(\d{1,2}):(\d{2})\b", text)
     return time(int(m.group(1)), int(m.group(2))) if m else None
+
+
+def _clock_ampm(text: str) -> time | None:
+    """'11:59 pm' -> 23:59 (parse_clock already handles 24-hour times)."""
+    m = re.search(r"\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b", text, re.I)
+    if not m:
+        return None
+    return time(int(m.group(1)) % 12 + (12 if m.group(3).lower() == "pm" else 0), int(m.group(2) or 0))
 
 
 def _keys(name: str) -> set[str]:
@@ -109,15 +119,29 @@ def progress(store: Store, code: str, now: datetime) -> dict:
 
 
 # ---- notes --------------------------------------------------------------------------------------------------
+_WORDLIKE = re.compile(r"[A-Z]?[a-z]+(?:['’-][a-z]+)*[,.:?!]?|[A-Z]{2,6}[,.:?!]?|\d+[a-z%]*[,.:]?|&|-|—|–")
+
+
 def _is_title(line: str) -> bool:
-    """A slide title: starts with a capital or digit, 4-80 chars, at least one real word, not code."""
-    return (4 <= len(line) <= 80 and bool(re.match(r"[A-Z0-9]", line)) and bool(re.search(r"[A-Za-z]{3}", line))
-            and not re.search(r"[{}();=<>`]|=>|\bconst\b|\bfunction\b|\bimport\b", line))
+    """A slide title: starts with a capital or digit, 4-80 chars, not code, and mostly real-looking words
+    (mirrored or rotated OCR text like 'ABojOuIudL' or 'S PIO v PIO' fails)."""
+    if not (4 <= len(line) <= 80 and re.match(r"[A-Z0-9]", line) and re.search(r"[A-Za-z][a-z]{2}", line)):
+        return False
+    if re.search(r"[{}();=<>`\]\[|‘’¥®©]|=>|\bconst\b|\bfunction\b|\bimport\b", line):
+        return False
+    toks = line.split()
+    good = [t for t in toks if _WORDLIKE.fullmatch(t)]
+    vowels = all(re.search(r"[aeiouy]", t, re.I) for t in good if len(t) > 3 and t.isalpha())
+    return len(good) / len(toks) >= 0.75 and vowels
 
 
 def _deck_title(url: str) -> str:
     """'02a-coupling.pdf' -> '02a · Coupling'."""
     name = url.rsplit("/", 1)[-1].rsplit(".", 1)[0]
+    name = re.sub(r"[-_][0-9a-f]{16,}$", "", name)  # drop content hashes: 'Lec01-81957efe...' -> 'Lec01'
+    lm = re.match(r"(?:lec|lecture)[-_ ]?0*(\d+)$", name, re.I)
+    if lm:
+        return f"Lecture {lm.group(1)}"
     m = re.match(r"(\d+[a-z]?)[-_ ]+(.*)", name)
     words = (m.group(2) if m else name).replace("_", " ").replace("-", " ").strip()
     return f"{m.group(1)} · {words[:1].upper() + words[1:]}" if m else words[:1].upper() + words[1:]
@@ -134,8 +158,15 @@ def _slide_outline(chunks: list[dict]) -> dict:
     def lines(t):
         return [l.strip(" ●•-\t") for l in t.splitlines() if l.strip() and l.strip() not in boiler]
     ordered = [lines(pages[p]) for p in sorted(pages)]
-    first = ordered[0][0] if ordered and ordered[0] else ""
-    title = first if re.match(r"^\d+[a-z]?\s*[-–:]\s*\S", first) else ""  # e.g. '02a - Cost of Change: Coupling'
+    first_lines = ordered[0][:4] if ordered and ordered[0] else []
+    first = first_lines[0] if first_lines else ""
+    title = ""
+    if re.match(r"^\d+[a-z]?\s*[-–:]\s*\S", first):  # e.g. '02a - Cost of Change: Coupling'
+        title = first
+    elif re.match(r"^(lecture|lec|class)\s*\d+\s*:?\s*$", first, re.I) and len(first_lines) > 1:
+        title = (first.rstrip(" :") + ": " + " ".join(first_lines[1:3])).strip()  # 'Lecture 1:' + next lines
+    elif re.match(r"^(lecture|lec|class)\s*\d+\s*[:\-–]\s*\S", first, re.I):
+        title = first
     goals, titles = [], []
     for ls in ordered[1:]:
         if not ls:
@@ -174,9 +205,14 @@ def notes(store: Store, code: str, now: datetime) -> list[dict]:
         for c in idx:
             if c["kind"] == "lecture":
                 decks.setdefault(c["url"], []).append(c)
-        for url in sorted(decks, key=lambda u: u.rsplit("/", 1)[-1]):
+        def _num(u: str):
+            n = re.search(r"(\d+)", u.rsplit("/", 1)[-1])
+            return (int(n.group(1)) if n else 999, u.rsplit("/", 1)[-1])
+
+        for url in sorted(decks, key=_num):
             o = _slide_outline(decks[url])
-            m = re.match(r"(\d+)", url.rsplit("/", 1)[-1])
+            fname = url.rsplit("/", 1)[-1]
+            m = None if re.match(r"(lec|lecture)", fname, re.I) else re.match(r"(\d+)", fname)  # leading digits = week
             sections.append({"order": url.rsplit("/", 1)[-1], "week": int(m.group(1)) if m else None,
                              "title": o["title"] or _deck_title(url), "goals": o["goals"],
                              "points": o["slides"], "source": url, "kind": "lecture slides", "scores": []})
@@ -218,18 +254,19 @@ def deadlines(store: Store, code: str, now: datetime, include_past_days: int = 0
             raw.append({"when": a.available_from.astimezone(timezone.utc), "what": f"{a.label} {a.title} opens",
                         "source": "PrairieLearn", "pct_of_grade": None, "status": "not_yet_available", "has_time": True})
     weights = {c["component"].lower(): c["syllabus_weight"] for c in facts.get("component_checks", [])}
+    from canvas_agent.website import deadline_rows
+
     doc = find_doc(store.root / "sites" / code, "schedule")
-    for r in (schedule_rows(doc) if doc else []):
-        if r.get("Due") and r.get("Date") and not r.get("Wk"):
-            d = parse_day(r["Date"], now.date())
-            if d:
-                clock = parse_clock(r["Date"])
-                is_exam = bool(re.search(r"midterm|final|exam", r["Due"], re.I))
-                w = next((v for k, v in weights.items() if is_exam and any(x in k for x in ("midterm", "final", "exam"))
-                          and (r["Due"].lower().split()[0] in k)), None)
-                raw.append({"when": _as_dt(d, clock), "what": f"{r['Due']} {r.get('What', '')}".strip(),
-                            "source": "course website", "pct_of_grade": w, "status": "exam" if is_exam else "scheduled",
-                            "has_time": bool(clock)})
+    for r in (deadline_rows(doc) if doc else []):
+        d = parse_day(r["when"], now.date())
+        if not d:
+            continue
+        clock = parse_clock(r["when"]) or _clock_ampm(r["when"])
+        is_exam = bool(re.search(r"midterm|final|exam", r["what"], re.I))
+        first = r["what"].lower().split()[0] if r["what"] else ""
+        w = next((v for k, v in weights.items() if is_exam and first and first in k), None)
+        raw.append({"when": _as_dt(d, clock), "what": r["what"], "source": "course website", "pct_of_grade": w,
+                    "status": "exam" if is_exam else "scheduled", "has_time": bool(clock)})
     for e in facts.get("facts", {}).get("exams", []):
         d = date.fromisoformat(e["exam_date"]) if e.get("exam_date") else None
         hint = next((h for h in facts.get("exam_date_hints", []) if h["kind"] == e["kind"]), None)

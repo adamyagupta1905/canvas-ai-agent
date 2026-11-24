@@ -1,6 +1,6 @@
 """Syllabus rules vs Canvas, per component. Synthetic data shaped like the real edge cases."""
 
-from canvas_agent.component_check import check_components, map_items_to_components, syllabus_view_course
+from canvas_agent.component_check import ComponentCheck, check_components, map_items_to_components, syllabus_view_course
 from canvas_agent.grades import grade_summary
 from canvas_agent.reconcile import reconcile
 from canvas_agent.syllabus_flow import ComponentRule, GradeComponent
@@ -185,3 +185,55 @@ def test_confirmed_absences_replace_the_zero_score_guess_and_show_limits():
     assert a.exceeds == [15.0]
     assert (a.sessions_held, a.sessions_remaining) == (5, 1)  # last class with a released mark is Class 05
     assert a.caveat == "Confirmed by you."
+
+
+def test_never_drop_and_singular_drop_wordings():
+    from canvas_agent.component_check import never_drop_keys
+    from canvas_agent.syllabus_flow import _number_in
+
+    q = ("We will drop your lowest homework grade. However, because Homework 5 is a significant assignment, "
+         "Homework 5 is excluded from the drop grade policy.")
+    assert _number_in(q, 1) and not _number_in("We will drop your two lowest quizzes.", 1)
+    assert never_drop_keys([q]) == {"hw5"}
+    assert never_drop_keys(["The lowest homework grade will be dropped, excluding Homework 5."]) == {"hw5"}
+    assert never_drop_keys(["We drop your lowest lab, except Lab 1 and 2."]) == {"lab1", "lab2"}
+    assert never_drop_keys(["Your two lowest scores will be dropped."]) == set()
+
+
+def test_drop_lowest_respects_never_drop_items():
+    from canvas_agent.grades import _apply_drops
+
+    pairs = [(50.0, 100.0, "pct_hw5"), (80.0, 100.0, "pct_hw1"), (90.0, 100.0, "pct_hw2")]
+    kept, dropped = _apply_drops(pairs, {"drop_lowest": 1, "never_drop_keys": ["hw5"]})
+    assert dropped == ["pct_hw1"]  # HW5 is the lowest but protected, so the next lowest goes
+    assert {n for _, _, n in kept} == {"pct_hw5", "pct_hw2"}
+
+
+def test_pass_requirement_checks_combined_and_partial():
+    from canvas_agent.component_check import pass_requirement_checks
+
+    def chk(name, w, avg, scored, items):
+        return ComponentCheck(component=name, syllabus_weight=w, canvas_groups=[], canvas_weight=None, items_in_canvas=items,
+                              scored=scored, expected_items=None, remaining_by_syllabus=None, numbering_gaps=[],
+                              drop_syllabus=None, drop_canvas=None, aggregation_syllabus=None, equal_points_in_canvas=True,
+                              completion_based=False, avg_canvas_rules=avg, avg_syllabus_rules=avg, items=[], flags=[], rules=[])
+    checks = [chk("Midterm 1", 25, 78.57, 1, 1), chk("Midterm 2", 25, 69.12, 1, 1), chk("Final", 30, None, 0, 0),
+              chk("Homework", 15, 95.67, 6, 9)]
+    q = "Pass the midterms and final with a combined weighted average of at least 50%."
+    rules = [ComponentRule(component=n, kind="pass_requirement", value=50, summary="s", chunk_id="c", source_quote=q)
+             for n in ("Midterm 1", "Midterm 2", "Final")]
+    rules.append(ComponentRule(component="Homework", kind="pass_requirement", value=40, summary="s", chunk_id="c",
+                               source_quote="At least 40% homework average."))
+    exams, hw = pass_requirement_checks(checks, rules)
+    # graded: (25*78.57 + 25*69.12) / 50 = 73.845 ; need (50*80 - 73.845*50) / 30 = 10.26 on the final
+    assert exams.components == ["Midterm 1", "Midterm 2", "Final"] and exams.status == "on_track"
+    assert exams.current_pct == 73.84 and abs(exams.needed_on_remaining_pct - 10.27) < 0.02
+    assert hw.status == "on_track" and hw.needed_on_remaining_pct is None  # 3 homeworks still to come: not "met"
+
+
+def test_attendance_wording_is_not_a_grade_pass_requirement():
+    from canvas_agent.component_check import pass_requirement_checks
+
+    r = ComponentRule(component="Final exam", kind="pass_requirement", value=20, summary="s", chunk_id="c",
+                      source_quote="Students missing more than 20% of classes may be excluded from the final exam.")
+    assert pass_requirement_checks([], [r]) == []

@@ -133,6 +133,21 @@ def overview_tab(code: str, course: dict, facts: dict | None) -> None:
     warnings += [w for w in canvas_view.warnings if not (syl and "syllabus weights are needed" in w)]
     for w in warnings:
         st.warning(w)
+    for pr in (facts or {}).get("pass_requirements", []):
+        comps = " + ".join(pr["components"])
+        if pr["status"] == "met":
+            msg = f"Pass requirement met: {comps} at {pr['current_pct']:.1f}% (need {pr['threshold_pct']:g}%)."
+        elif pr["status"] == "safe":
+            msg = f"Pass requirement already secured: {comps} at {pr['current_pct']:.1f}% so far (need {pr['threshold_pct']:g}%)."
+        elif pr["status"] in ("on_track", "at_risk") and pr["needed_on_remaining_pct"] is not None:
+            msg = (f"Pass requirement: {comps} must average at least {pr['threshold_pct']:g}%. You are at "
+                   f"{pr['current_pct']:.1f}% on the graded part; you need {pr['needed_on_remaining_pct']:.1f}% on the rest.")
+        elif pr["status"] in ("on_track", "at_risk"):
+            msg = (f"Pass requirement: {comps} must average at least {pr['threshold_pct']:g}%. "
+                   f"You are at {pr['current_pct']:.1f}% so far, with more work still to be graded.")
+        else:
+            msg = f"Pass requirement: {comps} must average at least {pr['threshold_pct']:g}% (nothing graded yet)."
+        (st.error if pr["status"] == "at_risk" else st.success if pr["status"] in ("met", "safe") else st.info)(msg)
     att = (facts or {}).get("attendance_check")
     if att:
         limits = " · ".join(f"more than {t}% = more than {k} of {att['sessions_total']} classes"

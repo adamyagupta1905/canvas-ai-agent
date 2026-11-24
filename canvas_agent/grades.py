@@ -92,11 +92,24 @@ def _pct(pairs) -> float:
     return earned / possible if possible else float("-inf")
 
 
+def _item_keys(name: str) -> set[str]:
+    """'pct_hw5' / 'Homework 5' / 'HW05' -> {'hw5'}; 'Lab 3' -> {'lab3'} (used for never-drop matching)."""
+    n = name.lower().replace("_", " ")
+    return {f"{ {'homework': 'hw', 'assignment': 'a', 'quiz': 'quiz', 'lab': 'lab', 'hw': 'hw'}[p] }{int(d)}".replace(" ", "")
+            for p, d in re.findall(r"\b(homework|hw|assignment|quiz|lab)\s*0*(\d+)", n)}
+
+
 def _apply_drops(pairs: list[tuple[float, float, str]], rules: dict) -> tuple[list, list[str]]:
     """pairs: (score, points, name). Returns (kept, dropped names), choosing drops that maximise the group %."""
     lo, hi = int(rules.get("drop_lowest") or 0), int(rules.get("drop_highest") or 0)
     if rules.get("never_drop"):
-        raise NotImplementedError("never_drop rules are not supported yet")
+        raise NotImplementedError("Canvas never_drop (assignment ids) is not supported; use never_drop_keys")
+    protect = {k.lower() for k in rules.get("never_drop_keys", [])}
+    if protect:  # e.g. 'Homework 5 cannot be dropped': keep those out of the drop choice entirely
+        keep = [p for p in pairs if _item_keys(p[2]) & protect]
+        rest = [p for p in pairs if not (_item_keys(p[2]) & protect)]
+        kept, dropped = _apply_drops(rest, {k: v for k, v in rules.items() if k != "never_drop_keys"})
+        return keep + kept, dropped
     n = len(pairs)
     lo = min(lo, max(n - 1, 0))
     hi = min(hi, max(n - 1 - lo, 0))

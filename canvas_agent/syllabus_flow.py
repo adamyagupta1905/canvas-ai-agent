@@ -158,8 +158,10 @@ def _number_in(quote: str, value: float) -> bool:
     'the lowest <thing> is dropped' with no other number in the quote."""
     nums = [float(x) for x in re.findall(r"\d+(?:\.\d+)?", quote)]
     nums += [float(v) for w, v in _WORDS.items() if re.search(rf"\b{w}\b", quote.lower())]
-    if abs(value - 1) < 1e-6 and not nums and re.search(r"\b(the|your) lowest\b(?:\s+\w+){0,3}\s+(is|will be) dropped", quote, re.I):
-        return True
+    singular = (re.search(r"\b(the|your) lowest\b(?:\s+\w+){0,3}\s+(is|will be) dropped", quote, re.I)
+                or re.search(r"\bdrop(?:s|ped)?\s+(?:the|your)\s+lowest\s+(?!two|three|four|five|\d)\w+", quote, re.I))
+    if abs(value - 1) < 1e-6 and singular:
+        return True  # singular: other numbers in the quote name items ('excluding Homework 5'), not the count
     return any(abs(n - value) < 1e-6 for n in nums)
 
 

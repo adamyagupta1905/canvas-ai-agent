@@ -73,7 +73,8 @@ class Manifest(BaseModel):
 def classify(url: str, title: str) -> str:
     u, t = url.lower(), title.lower()
     if u.endswith(".pdf"):
-        return "lecture" if "/lecture" in u or "slides" in u else "file"
+        name = u.rsplit("/", 1)[-1]
+        return "lecture" if ("/lecture" in u or "slides" in u or re.match(r"(lec|lecture)[-_ ]?\d+", name)) else "file"
     for kind, pat in [("syllabus", r"syllabus|course outline"), ("schedule", r"schedule|calendar"),
                       ("project", r"/project|deliverable|/d\d|spec"), ("textbook", r"textbook|/book/|/notes/")]:
         if re.search(pat, u) or re.search(pat, t):
@@ -169,7 +170,8 @@ def crawl(cfg: SiteConfig, out_dir: Path, client: httpx.Client | None = None, sl
                 skipped.append({"url": url, "reason": f"error: {type(e).__name__}"})
                 continue
             sleep(cfg.delay_s)
-            if resp.status_code == 304 and prev:  # unchanged since last crawl
+            if resp.status_code == 304 and prev:  # unchanged since last crawl (re-classify: rules may have improved)
+                prev = prev.model_copy(update={"kind": classify(prev.url, prev.title)})
                 docs.append(prev)
                 files += is_file
                 pages += not is_file
@@ -241,7 +243,44 @@ def find_doc(site_dir: Path, kind: str) -> SiteDoc | None:
     if not m:
         return None
     cands = [d for d in m.docs if d.kind == kind]
-    return min(cands, key=lambda d: len(d.url)) if cands else None  # shortest URL = the main page of that kind
+    if cands:
+        return min(cands, key=lambda d: len(d.url))  # shortest URL = the main page of that kind
+    if kind == "schedule":
+        # No page called "schedule": among course pages (never textbook chapters, whose data tables often have a
+        # 'Date' column), pick the one with the most deadline rows, then week-by-week rows.
+        def score(d):
+            weeks = sum(len(t) - 1 for t in d.tables if t and any(_WEEKLY.match(h.strip()) for h in t[0]))
+            return (len(deadline_rows(d)), weeks)
+        cands = [d for d in m.docs if d.tables and d.kind in ("page", "syllabus", "schedule")]
+        best = max(cands, key=score, default=None)
+        return best if best and score(best) != (0, 0) else None
+    return None
+
+
+_WEEKLY = re.compile(r"^(wk|week|chp#?|chapter|lecture|class)$", re.I)
+
+
+def deadline_rows(doc: SiteDoc) -> list[dict]:
+    """Rows of deadline tables: a table whose header names a due/assessment column and a date column, and that is
+    not a week-by-week schedule. -> [{"what": "D4 Build it", "when": "Fri 27 Nov, 18:00"}]"""
+    out = []
+    for t in doc.tables:
+        if len(t) < 2:
+            continue
+        head = [h.strip() for h in t[0]]
+        if any(_WEEKLY.match(h) for h in head):
+            continue
+        when_i = next((i for i, h in enumerate(head) if re.search(r"date|when", h, re.I)), None)
+        if when_i is None or not any(re.search(r"\bdue\b|assessment|deliverable", h, re.I) for h in head):
+            continue
+        what_i = [i for i, h in enumerate(head) if i != when_i and re.search(r"^(due|assessment|deliverable|item|what)$", h, re.I)]
+        extra = [i for i, h in enumerate(head) if i not in (when_i, *what_i) and re.search(r"^(what|description|details)$", h, re.I)]
+        for r in t[1:]:
+            if when_i >= len(r) or not r[when_i].strip():
+                continue
+            label = " ".join(r[i] for i in (what_i or [0]) + extra if i < len(r) and r[i].strip())
+            out.append({"what": label.strip(), "when": r[when_i]})
+    return out
 
 
 def schedule_rows(doc: SiteDoc) -> list[dict]:
@@ -279,11 +318,20 @@ def build_index(site_dir: Path, code: str) -> list[dict]:
     m = load_manifest(site_dir)
     if not m:
         return []
+    old: dict[str, list[dict]] = {}
+    if (site_dir / "index.json").exists():  # reuse text already extracted (OCR is slow) for unchanged files
+        for r in json.loads((site_dir / "index.json").read_text()):
+            old.setdefault(r["url"], []).append(r)
     chunks = []
     for d in m.docs:
+        prev = old.get(d.url)
+        if prev and prev[0].get("sha256") == d.sha256:
+            chunks += [r | {"kind": d.kind, "title": d.title} for r in prev]
+            continue
         doc_id = f"{code}-{_slug(d.url)[-60:]}"
         for ch in chunk_pages(doc_id, doc_pages(site_dir, d)):
-            chunks.append({"id": ch.id, "url": d.url, "kind": d.kind, "title": d.title, "page": ch.page, "text": ch.text})
+            chunks.append({"id": ch.id, "url": d.url, "kind": d.kind, "title": d.title, "page": ch.page, "text": ch.text,
+                           "sha256": d.sha256})
     (site_dir / "index.json").write_text(json.dumps(chunks))
     return chunks
 

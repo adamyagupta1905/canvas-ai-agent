@@ -90,6 +90,19 @@ class CanvasAPI:
     def modules(self, course_id: int) -> list[dict]:
         return self.get_all(f"/api/v1/courses/{course_id}/modules", [("include[]", "items"), ("per_page", 100)])
 
+    def tabs(self, course_id: int) -> list[dict]:
+        return self.get_all(f"/api/v1/courses/{course_id}/tabs")
+
+    def external_tool(self, course_id: int, tool_id: int) -> dict:
+        return self.get(f"/api/v1/courses/{course_id}/external_tools/{tool_id}")
+
+    def sessionless_launch_url(self, course_id: int, tool_id: int) -> str | None:
+        r = self.get(f"/api/v1/courses/{course_id}/external_tools/sessionless_launch", [("id", tool_id)])
+        return r.get("url") if isinstance(r, dict) else None
+
+    def get_text(self, url: str) -> str:
+        return self._get(url).text
+
     def file_meta(self, file_id: int) -> dict:
         return self.get(f"/api/v1/files/{file_id}")
 

@@ -137,3 +137,42 @@ def test_past_exam_without_score_is_flagged():
     out = past_exams_without_score([{"kind": "midterm", "exam_date": None}], [{"kind": "midterm", "found_date": "2026-10-29"}],
                                    [chk], "2026-11-23", ["Gradescope"])
     assert out == ["Midterm (25%) was scheduled on or around 2026-10-29 but has no score in Canvas or PrairieLearn yet. Check Gradescope."]
+
+
+def _doc(url, kind, tables):
+    from canvas_agent.website import SiteDoc
+
+    return SiteDoc(url=url, kind=kind, title="t", path="pages/x.md", sha256="x", bytes=1, fetched_at="now", tables=tables)
+
+
+def test_deadline_rows_handle_different_header_styles():
+    from canvas_agent.website import deadline_rows
+
+    a = _doc("u", "page", [[["Due", "Date", "What"], ["D4", "Fri 27 Nov, 18:00", "Build it"]],
+                          [["Wk", "Dates", "Due"], ["3", "Sep 22", "D1 Fri Sep 25"]]])  # weekly table is not a deadline table
+    b = _doc("u", "page", [[["Assessment", "Due date"], ["hw1", "Sept 14, 11:59 pm"], ["Final exam", ""]]])
+    assert deadline_rows(a) == [{"what": "D4 Build it", "when": "Fri 27 Nov, 18:00"}]
+    assert deadline_rows(b) == [{"what": "hw1", "when": "Sept 14, 11:59 pm"}]  # no date given: left out, not guessed
+
+
+def test_schedule_fallback_ignores_textbook_data_tables(tmp_path):
+    import json
+
+    from canvas_agent.website import find_doc
+
+    site = tmp_path / "s"
+    site.mkdir()
+    home = _doc("https://x/c/", "page", [[["Assessment", "Due date"], ["hw1", "Sep 14"]], [["Week", "Dates"], ["1", "Sep 9"]]])
+    book = _doc("https://x/book/ch6", "textbook", [[["Date", "Sales", "Due"], ["2020-01-01", "5", "x"]] * 50])
+    (site / "manifest.json").write_text(json.dumps({"code": "C", "start_urls": ["https://x/c/"], "scopes": [], "crawled_at": "n",
+                                                    "docs": [book.model_dump(), home.model_dump()], "skipped": [], "external_links": []}))
+    assert find_doc(site, "schedule").url == "https://x/c/"
+
+
+def test_lecture_pdfs_with_hashed_names():
+    from canvas_agent.course_view import _deck_title, _is_title
+
+    assert classify("https://x/c/_public/Lec07-409e7435ce653ddeb312d398d2186684.pdf", "") == "lecture"
+    assert _deck_title("https://x/c/_public/Lec07-409e7435ce653ddeb312d398d2186684.pdf") == "Lecture 7"
+    assert _is_title("Overfitting and underfitting") and _is_title("Error and accuracy")
+    assert not _is_title("ABojOuIudL") and not _is_title("S PIO v PIO mee C PIO T PIO") and not _is_title("UONepljeA-SSOJD")

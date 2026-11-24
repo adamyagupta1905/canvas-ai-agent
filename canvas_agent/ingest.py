@@ -134,3 +134,44 @@ def source_from_user_file(path: str | Path) -> SyllabusSource:
     if p.suffix.lower() == ".pdf":
         return SyllabusSource(kind="pdf", how=f"File provided by the user: {p.name}", path=str(p))
     return SyllabusSource(kind="html", how=f"Text file provided by the user: {p.name}", path=str(p))
+
+
+def custom_url_from_launch(html: str) -> str | None:
+    """A Canvas 'redirect' external tool (e.g. 'Course Website') carries its real target in the launch form."""
+    m = re.search(r'name="custom_url"\s+value="([^"]+)"', html) or re.search(r'value="([^"]+)"\s+name="custom_url"', html)
+    return m.group(1).replace("&amp;", "&") if m else None
+
+
+def course_site_urls(api: CanvasAPI, course_id: int, front_page_html: str = "") -> list[dict]:
+    """Course-site candidates for a course: external links on the front page, plus the real targets of redirect
+    tools in the course navigation (resolved via a sessionless launch; nothing is submitted)."""
+    from canvas_agent.website import discover_site_urls
+
+    out = [{"url": u, "how": "front page link"} for u in discover_site_urls(_hrefs(front_page_html))]
+    for tab in api.tabs(course_id):
+        if tab.get("type") != "external":
+            continue
+        m = re.search(r"/external_tools/(\d+)", tab.get("html_url", ""))
+        if not m:
+            continue
+        tool_id = int(m.group(1))
+        try:
+            tool = api.external_tool(course_id, tool_id)
+            if "redirect" not in (tool.get("url") or ""):
+                continue
+            launch = api.sessionless_launch_url(course_id, tool_id)
+            target = custom_url_from_launch(api.get_text(launch)) if launch else None
+        except Exception:  # a tool we cannot inspect is skipped, never guessed
+            continue
+        if target and discover_site_urls([target]):
+            out.append({"url": target, "how": f"redirect tool '{tab.get('label')}'"})
+    seen, uniq = set(), []
+    for o in out:
+        if o["url"] not in seen:
+            seen.add(o["url"])
+            uniq.append(o)
+    return uniq
+
+
+def _hrefs(html: str) -> list[str]:
+    return re.findall(r'href="([^"]+)"', html or "")
