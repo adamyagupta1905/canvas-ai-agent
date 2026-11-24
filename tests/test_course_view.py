@@ -119,3 +119,21 @@ def test_plan_rules_work_blocks_and_exam_review_with_weak_areas_first(tmp_path):
 def test_overview_has_one_row_per_course(tmp_path):
     rows = cv.overview(make_store(tmp_path), NOW)
     assert rows[0]["code"] == "CS101" and rows[0]["grade_pct"] == 90.0 and rows[0]["next_deadline"]
+
+
+CONTRACT_COURSE_KEYS = {"code", "name", "grade", "progress", "needed", "pass_requirements", "warnings", "input_requests",
+                        "components", "notes", "plan", "deadlines", "sources"}
+
+
+def test_dashboard_export_matches_the_ui_contract(tmp_path):
+    from scripts.export_dashboard import export
+
+    out = export(NOW, make_store(tmp_path).root)
+    assert set(out) == {"generated_at", "courses", "ask_examples"}
+    c = out["courses"][0]
+    assert set(c) == CONTRACT_COURSE_KEYS
+    assert set(c["grade"]) >= {"current_pct", "weight_graded_pct", "floor_pct", "ceiling_pct", "basis"}
+    assert set(c["progress"]) == {"course_progress_pct", "label"} and c["progress"]["label"] == "Week 1 of 2"
+    assert set(c["plan"]) == {"weak_areas", "days"}
+    assert all(set(d) == {"when", "what", "pct_of_grade", "status", "sources", "days_left"} for d in c["deadlines"])
+    assert all(set(n) == {"order", "label", "title", "goals", "points", "scores", "source_url"} for n in c["notes"])

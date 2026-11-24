@@ -43,7 +43,9 @@ precise grades, a unified tracker, notes, quizzes and exam plans. Use-case map: 
 - [x] Grade rules: never-drop items ("excluding Homework 5"), active-voice drop wording, course abbreviations (HW,
       MT) in matching, pass-requirement checks (combined weighted thresholds, needed on remaining), attendance
       wording excluded from pass checks; index reuses extracted text for unchanged files (no repeated OCR)
-- [x] 103 offline tests (fake Canvas server asserts GET-only; fake website; real Tesseract OCR test; CI installs Tesseract)
+- [x] UI: a Lovable front end ("Semester Orbit") built from a brief with fictional demo data and the dashboard JSON
+      contract; `scripts.export_dashboard` writes the real data in that contract locally (data/dashboard.json, never uploaded)
+- [x] 104 offline tests (fake Canvas server asserts GET-only; fake website; real Tesseract OCR test; CI installs Tesseract)
 
 ## In progress
 - [ ] Nothing mid-edit.
@@ -57,6 +59,9 @@ precise grades, a unified tracker, notes, quizzes and exam plans. Use-case map: 
 6. Exam study plans driven by weak topics, study focus and the share of grade at stake.
 
 ## Blockers / open questions
+- Lovable UI: build finished but the account ran out of credits before a visual pass; course pages and possible
+  type errors are unverified. To use real data, sync the Lovable project to GitHub and run it locally with
+  data/dashboard.json swapped in (do not upload real data to Lovable).
 - `CanvasAPI` not yet run against real Canvas (needs the student's token in `.env`); tested only against a fake server.
 - `gemini-2.5-flash` is retired for new users; default is `gemini-3.8-flash` (verified by a live call).
 
@@ -70,7 +75,7 @@ precise grades, a unified tracker, notes, quizzes and exam plans. Use-case map: 
 - 2026-11-23 Real course data only in gitignored `data/`; tests stay synthetic.
 
 ## Verification status
-- Tests: 103 passing, `.venv/bin/python -m pytest -q`, 2026-11-24
+- Tests: 104 passing, `.venv/bin/python -m pytest -q`, 2026-11-24
 - Grade engine: matches Canvas's own totals on every course where Canvas shows them; others hand-checked
 - Evals: live extraction runs reviewed by hand against Canvas and the source documents; no scored eval yet
 - Not verified: ClaudeClient against the real API; snapshot freshness (pulls are manual)
