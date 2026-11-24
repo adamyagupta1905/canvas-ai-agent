@@ -1,0 +1,14 @@
+{
+  "_note": "Synthetic syllabi only. Each case lists every exam the syllabus states; exam_date null = syllabus gives no date (the right answer is 'missing', not a guess).",
+  "feature": "syllabus exam extraction",
+  "cases": [
+    {
+      "id": "econ101",
+      "syllabus_path": "tests/fixtures/courses/ECON101/syllabus.txt",
+      "expected": [
+        {"kind": "midterm", "exam_date": "2026-10-08"},
+        {"kind": "final", "exam_date": null}
+      ]
+    }
+  ]
+}

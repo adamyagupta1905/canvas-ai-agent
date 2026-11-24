@@ -1,0 +1,7 @@
+[
+  {"id": "a1", "course_id": "ECON101", "name": "Problem Set 1", "due_at": "2026-09-10T23:59:00", "points_possible": 10, "score": 9, "state": "graded"},
+  {"id": "a2", "course_id": "ECON101", "name": "Problem Set 2", "due_at": "2026-09-24T23:59:00", "points_possible": 10, "state": "submitted"},
+  {"id": "a3", "course_id": "ECON101", "name": "Essay Draft", "due_at": "2026-10-01T23:59:00", "points_possible": 20, "state": "not_submitted"},
+  {"id": "a4", "course_id": "ECON101", "name": "Problem Set 3", "due_at": "2026-10-15T23:59:00", "points_possible": 10, "state": "not_submitted"},
+  {"id": "a5", "course_id": "ECON101", "name": "Reading Reflection", "due_at": null, "state": "not_submitted"}
+]
