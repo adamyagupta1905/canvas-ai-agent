@@ -20,5 +20,10 @@ python3.13 -m venv .venv && .venv/bin/pip install -r requirements.txt
 ```
 To use real services: `cp .env.example .env` and fill it in locally. Never commit `.env`.
 
+## How it works
+Every course gets the same dashboard tabs (Overview, Grades, Notes, Plan, Deadlines, Sources), built
+deterministically from Canvas, PrairieLearn, the course website and what you enter. See
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the data flow and the agents and their tools.
+
 ## Status
 Early scaffold. See [PROGRESS.md](PROGRESS.md) for the plan and [docs/DECISIONS.md](docs/DECISIONS.md) for design choices.

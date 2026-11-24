@@ -30,7 +30,7 @@ class AgentStep(BaseModel):
 
 
 class Route(BaseModel):
-    agent: Literal["grades", "attendance", "deadlines", "syllabus", "content"]
+    agent: Literal["grades", "planner", "content", "rules"]
     course_code: str | None = None
     reason: str
 
@@ -111,25 +111,23 @@ def ungrounded_numbers(answer: str, trace: list[dict], question: str = "") -> li
 
 
 AGENTS = {
-    "grades": Agent("grades", "current grade, component averages, and what is needed to reach a target grade.",
+    "grades": Agent("grades", "current grade, component averages, what is needed for a target, and grades the student must provide.",
                     ["list_courses", "course_grade", "component_breakdown", "needed_for_target", "prairielearn_status",
                      "input_requests"]),
-    "attendance": Agent("attendance", "absences against the syllabus attendance limits and what they mean.",
-                        ["list_courses", "attendance_status", "syllabus_rules"]),
-    "deadlines": Agent("deadlines", "what is due soon and how much each item is worth, plus exam dates.",
-                       ["list_courses", "upcoming", "exam_dates", "prairielearn_status", "course_schedule"]),
-    "syllabus": Agent("syllabus", "grading rules from the syllabus: drops, late work, missed work, pass requirements.",
-                      ["list_courses", "syllabus_rules", "component_breakdown"]),
-    "content": Agent("content", "what was taught when, where a topic is covered (lecture slides, textbook, project specs), "
-                     "and pointing to the exact page. Quote or paraphrase only what the snippets say and cite the URL.",
-                     ["list_courses", "course_schedule", "search_course_content", "study_focus"]),
+    "planner": Agent("planner", "how far the course has got, every deadline and exam, and the day-by-day study plan.",
+                     ["list_courses", "course_progress", "deadlines", "study_plan", "exam_dates"]),
+    "content": Agent("content", "structured notes, what was taught when, where a topic is covered (cite URL and page), "
+                     "and the student's study focus. Use only what the tools return.",
+                     ["list_courses", "course_notes", "search_course_content", "course_schedule", "study_focus"]),
+    "rules": Agent("rules", "grading rules from the syllabus (drops, late or missed work, pass requirements) and attendance limits.",
+                   ["list_courses", "syllabus_rules", "attendance_status", "component_breakdown"]),
 }
 
 ROUTER_SYSTEM = (
-    "Route a student's question to one agent: grades (grades, averages, targets), attendance (absences, "
-    "attendance limits), deadlines (what's due, exam dates), syllabus (rules, drops, late or missed work), "
-    "content (lecture topics, what was covered when, where to find or study a topic). "
-    "Extract the course code if one is named (e.g. LAW201, CS101); otherwise null."
+    "Route a student's question to one agent: grades (grades, averages, targets, missing marks), planner (progress, "
+    "deadlines, exams, what to do when), content (notes, topics, where something is covered, study focus), rules "
+    "(syllabus rules, drops, late or missed work, attendance). Extract the course code if one is named "
+    "(e.g. LAW201, CS101); otherwise null."
 )
 
 

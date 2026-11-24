@@ -147,6 +147,36 @@ def build_tools(store: Store, now: datetime | None = None) -> dict[str, Tool]:
         res = search(store.root / "sites" / code, query, k=5, kinds=[kind] if kind else None)
         return res or [{"note": "no matches, or no course website crawled for this course"}]
 
+    def course_progress(code: str) -> dict:
+        from canvas_agent import course_view
+
+        _course(code)
+        return course_view.progress(store, code, now)
+
+    def course_notes(code: str, week: int | None = None) -> list[dict]:
+        from canvas_agent import course_view
+
+        _course(code)
+        secs = course_view.notes(store, code, now)
+        if week is not None:
+            secs = [s for s in secs if s["week"] == int(week)]
+        return [{k: s[k] for k in ("week", "title", "goals", "points", "scores", "source")} | {"points": s["points"][:15]}
+                for s in secs] or [{"note": "no notes for that selection"}]
+
+    def deadlines(code: str) -> list[dict]:
+        from canvas_agent import course_view
+
+        _course(code)
+        return [{"when": d["when"].isoformat(), "what": d["what"], "pct_of_grade": d["pct_of_grade"],
+                 "status": d["status"], "sources": d["sources"], "days_left": d["days_left"]}
+                for d in course_view.deadlines(store, code, now)]
+
+    def study_plan(code: str) -> dict:
+        from canvas_agent import course_view
+
+        _course(code)
+        return course_view.plan(store, code, now)
+
     def input_requests(code: str) -> list[dict]:
         f = store.facts(code) or {}
         return f.get("input_requests", []) or [{"note": "nothing missing that the student needs to provide"}]
@@ -197,6 +227,14 @@ def build_tools(store: Store, now: datetime | None = None) -> dict[str, Tool]:
              "returns snippets with their URL and page.", {"code": "str: course code", "query": "str: what to look for",
                                                             "kind": "str (optional): lecture | textbook | project | syllabus | schedule"},
              search_course_content),
+        Tool("course_progress", "How far the course has got (weeks / classes / dated items) plus the grade summary.",
+             {"code": "str: course code"}, course_progress),
+        Tool("course_notes", "Structured notes in course order (titles, learning goals, topics covered, your scores, source).",
+             {"code": "str: course code", "week": "int (optional): only this week"}, course_notes),
+        Tool("deadlines", "Every upcoming deadline and exam merged from Canvas, PrairieLearn, the course website and the syllabus.",
+             {"code": "str: course code"}, deadlines),
+        Tool("study_plan", "Day-by-day plan: work blocks before deadlines, exam review on weak areas first.",
+             {"code": "str: course code"}, study_plan),
         Tool("input_requests", "Grades the system cannot see (e.g. Gradescope, iClicker) that the student should provide; "
              "ask the student for the score and what they lost marks on.", {"code": "str: course code"}, input_requests),
         Tool("study_focus", "The student's own improvement areas with matching course pages to study.",

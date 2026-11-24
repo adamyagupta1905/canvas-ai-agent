@@ -25,8 +25,9 @@ notes, an exam study plan, quizzes with marking, and a live progress dashboard (
 - `canvas_agent/models.py`: Pydantic contracts (Assignment, ExamEvent, QuizQuestion, CourseProgress)
 - `canvas_agent/sources.py`: `CourseSource` protocol; `FixtureSource` (offline); Canvas REST client to come
 - `canvas_agent/grades.py`: Canvas-exact grade engine (weights, drops, omitted, unreleased, extra credit), floor/ceiling, needed-to-hit-target, unified tracker, topic mastery
+- `canvas_agent/course_view.py`: the five per-course views (progress, notes, deadlines, plan, overview), pure Python
 - `canvas_agent/tools.py`: deterministic tools over `data/` (grade, needed, components, attendance, upcoming, rules, exams)
-- `canvas_agent/agents.py`: router + grades / attendance / deadlines / syllabus agents; structured-output tool loop; ungrounded-number check
+- `canvas_agent/agents.py`: router + 4 agents (grades, planner, content, rules); structured-output tool loop; ungrounded-number check
 - `canvas_agent/progress.py`: deterministic progress % / overdue / next due / quiz marking
 - `canvas_agent/canvas_api.py`: read-only Canvas REST client (GET only, token auth, pagination)
 - `canvas_agent/ingest.py`: Canvas -> snapshot dict + syllabus discovery/download (PDF link, Modules, Syllabus HTML, user file)
@@ -41,7 +42,8 @@ notes, an exam study plan, quizzes with marking, and a live progress dashboard (
 - `canvas_agent/component_check.py`: per-component rules vs Canvas, session counts, attendance, exam-date hints, syllabus-view course
 - `canvas_agent/syllabus.py`: LLM exam extraction + grounding check (quote must appear in syllabus)
 - `scripts/course_report.py`: per-course report over `data/canvas_snapshot.json`
-- `app.py`: Streamlit dashboard (real data from `data/`, demo fallback; `?course=CODE` in the URL)
+- `app.py`: Streamlit dashboard: All courses page + per-course tabs Overview · Grades · Notes · Plan · Deadlines · Sources (`?course=CODE`)
+- `docs/ARCHITECTURE.md`: data-flow and agent/tool diagrams (Mermaid) + use-case table
 - `docs/USE_CASES.md`: use cases mapped to the five sample course layouts
 - `tests/`: offline tests with `FakeLLM` and synthetic fixtures in `tests/fixtures/courses/`
 - `evaluation/`: `answer_key.json`, `run_eval.py`, `results/` (generated)

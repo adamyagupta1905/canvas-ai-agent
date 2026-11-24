@@ -117,3 +117,15 @@ Short records of choices that shape the system. Newest at the bottom.
 - **Why:** Gradescope/iClicker hold grades behind logins we do not automate; asking is honest, and the floor/ceiling
   already shows the stakes. Feedback in the student's own words is the best signal for planning.
 - **Revisit if:** A Gradescope export or API becomes available to students.
+
+## ADR-012: Five deterministic views per course; four agents
+- **Date:** 2026-11-24
+- **Decision:** `course_view.py` builds progress, notes, deadlines, plan and an all-courses overview with no LLM:
+  progress from schedule weeks / Modules classes / dated items; notes as extracted outlines (deck title, learning goals,
+  slide titles; repeated headers and code removed; Canvas modules as fallback); deadlines merged across Canvas,
+  PrairieLearn, website schedule and syllabus (same local day + matching key = one entry); plan by fixed rules (work
+  block the day before each deadline, exam review 7/4/2/1 days before, weak areas first, then course units). The
+  dashboard shows them as tabs; the agents call them as tools. Agents reduced from 5 to 4 (grades, planner, content, rules).
+- **Alternatives:** LLM-written notes and plans; one generalist agent.
+- **Why:** Deterministic views are free, instant, testable and never invent content. Fewer agents = simpler routing.
+- **Revisit if:** Students need prose summaries of lectures (add an optional, cited LLM notes pass on top of the outline).

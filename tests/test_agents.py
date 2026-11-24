@@ -78,9 +78,9 @@ def test_agents_only_get_their_own_tools_and_bad_calls_return_errors(tmp_path):
         AgentStep(action="call_tool", tool="course_grade", args_json='{"code": "NOPE"}'),
         AgentStep(action="answer", answer="I can't answer that here."),
     )
-    r = AGENTS["deadlines"].run("anything", llm, tools)
+    r = AGENTS["content"].run("anything", llm, tools)
     assert "not available to this agent" in r.trace[0]["result"]["error"]
-    assert "not available" in r.trace[1]["result"]["error"]  # course_grade is not a deadlines tool either
+    assert "not available" in r.trace[1]["result"]["error"]  # course_grade is not a content tool either
 
 
 def test_unknown_course_error_reaches_the_model(tmp_path):
@@ -101,3 +101,17 @@ def test_step_limit_stops_runaway_loops(tmp_path):
 def test_rounded_numbers_and_course_codes_count_as_grounded():
     trace = [{"tool": "course_grade", "args": {}, "result": {"current_pct": 72.38}}]
     assert ungrounded_numbers("About 72.4% (72.38%) in LAW201", trace, "LAW201?") == []
+
+
+def test_every_agent_tool_exists_and_roster_is_small(tmp_path):
+    tools = build_tools(store(tmp_path), now=NOW)
+    assert set(AGENTS) == {"grades", "planner", "content", "rules"}
+    for a in AGENTS.values():
+        assert set(a.tool_names) <= set(tools), (a.name, set(a.tool_names) - set(tools))
+
+
+def test_planner_tools_return_views(tmp_path):
+    tools = build_tools(store(tmp_path), now=NOW)
+    assert tools["course_progress"].fn("LAW101")["grade"]["current_pct"] == 84.0
+    assert [d["what"] for d in tools["deadlines"].fn("LAW101")] == ["Class 02 Exercise"]
+    assert tools["study_plan"].fn("LAW101")["days"][0]["tasks"][0]["task"] == "Work on: Class 02 Exercise"

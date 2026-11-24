@@ -1,6 +1,6 @@
 # Progress
 
-_Last updated: 2026-11-24_
+_Last updated: 2026-11-24 (views + architecture)_
 
 > Personal course results, grades and confirmations are kept out of git. The detailed, student-specific
 > version of this file lives in `data/PROGRESS_PRIVATE.md` (gitignored). This file describes the system only.
@@ -33,9 +33,11 @@ precise grades, a unified tracker, notes, quizzes and exam plans. Use-case map: 
       `scripts.enter_grade`, entries labelled "(entered by you)" in the grade, improvement areas -> study focus
 - [x] Agents: router + grades / attendance / deadlines / syllabus / content agents over deterministic tools,
       ungrounded-number check; `scripts/ask.py`
-- [x] Dashboard on local data (`?course=CODE`): syllabus-rules vs Canvas grade, components, per-class chart, rules with
-      quotes, confirmations, PrairieLearn, course website, input form, tracker
-- [x] 86 offline tests (fake Canvas server asserts GET-only; fake website; real Tesseract OCR test; CI installs Tesseract)
+- [x] Five deterministic views per course (`course_view.py`): progress, notes (extracted outlines), merged deadlines,
+      rule-based plan, all-courses overview. Dashboard: All courses page + tabs Overview · Grades · Notes · Plan ·
+      Deadlines · Sources. Agents simplified to 4 (grades, planner, content, rules) with the views as tools
+- [x] `docs/ARCHITECTURE.md`: data-flow and agents/tools diagrams
+- [x] 95 offline tests (fake Canvas server asserts GET-only; fake website; real Tesseract OCR test; CI installs Tesseract)
 
 ## In progress
 - [ ] Nothing mid-edit.
@@ -62,7 +64,7 @@ precise grades, a unified tracker, notes, quizzes and exam plans. Use-case map: 
 - 2026-11-23 Real course data only in gitignored `data/`; tests stay synthetic.
 
 ## Verification status
-- Tests: 86 passing, `.venv/bin/python -m pytest -q`, 2026-11-24
+- Tests: 95 passing, `.venv/bin/python -m pytest -q`, 2026-11-24
 - Grade engine: matches Canvas's own totals on every course where Canvas shows them; others hand-checked
 - Evals: live extraction runs reviewed by hand against Canvas and the source documents; no scored eval yet
 - Not verified: ClaudeClient against the real API; snapshot freshness (pulls are manual)
