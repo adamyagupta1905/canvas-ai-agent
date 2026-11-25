@@ -25,10 +25,11 @@ progress, notes, a plan and every deadline, deterministically, on a dashboard an
 - [x] Portfolio release prep: README rewritten (value prop, screenshots, why, results, keyless demo, limitations),
       `docs/EVALUATION.md` with measured aggregate results, fictional `demo_data/` + `scripts.make_demo_data`,
       `COURSE_DATA_DIR` switch; fresh-copy install + tests + demo boot verified
-- [x] Private GitHub repo `adamyagupta1905/canvas-ai-agent`; commits use the GitHub noreply address; CI green
+- [x] **Public** GitHub repo `adamyagupta1905/canvas-ai-agent` (made public 2026-11-24 after a full-history scan: no
+      keys, data or personal details; all commits use the GitHub noreply address); CI green
 
 ## In progress
-- [ ] Nothing mid-edit. Working tree clean at `349b036` before this handoff edit.
+- [ ] Nothing mid-edit. Working tree clean at `77013eb` before this handoff edit.
 
 ## Next up
 1. **Exam dates the syllabus leaves open** ("exam period"): add them to `input_requests` so the student can enter the
@@ -46,8 +47,13 @@ progress, notes, a plan and every deadline, deterministically, on a dashboard an
 - Lovable account is out of credits; its course pages (and possible type errors it mentioned) are unverified.
 - `CanvasAPI` has only been tested against a fake server (needs the student's token in `.env`).
 - One course site links a slide deck at a broken path (HTTP 503); a few image-only slides still leak OCR noise.
+- GitHub still serves one orphaned pre-rewrite commit by exact SHA (not on any branch); only GitHub Support can purge it.
 
 ## Decisions (newest first)
+- 2026-11-24 Repo made public; history rewritten first (noreply author, no personal terms) and force-pushed. **Why:** a
+  portfolio repo must not expose the student's email, school or results. Personal checks read terms from `data/`.
+- 2026-11-24 Keyless demo = fictional `demo_data/` run through the real pipeline with recorded model responses.
+  **Why:** visitors and screenshots must never see real course data.
 - 2026-11-24 Outside UI builders get fictional data + the JSON contract only; real data stays local. (CLAUDE.md)
 - 2026-11-24 Five deterministic views per course; four agents. (ADR-012)
 - 2026-11-24 Ask the student for grades no connector can reach; label them in every calculation. (ADR-011)
@@ -57,7 +63,7 @@ progress, notes, a plan and every deadline, deterministically, on a dashboard an
 - 2026-11-23 Grade engine reproduces Canvas rules, checked against Canvas totals. (ADR-003)
 
 ## Verification status
-- Tests: 107 passing, `.venv/bin/python -m pytest -q`, 2026-11-24 (also on a fresh copy with a new venv)
+- Tests: 107 passing, `.venv/bin/python -m pytest -q`, 2026-11-24 (also on a fresh copy with a new venv); CI green on `77013eb`
 - Grade engine: matches Canvas's own totals wherever Canvas shows them; other courses hand-checked
 - Live: syllabus extraction (gemini-3.8-flash, 2 calls per course) reviewed by hand; agent smoke questions grounded
 - Evals: no scored eval yet
