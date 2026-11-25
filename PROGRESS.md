@@ -20,7 +20,9 @@ progress, notes, a plan and every deadline, deterministically, on a dashboard an
       plan, all-courses overview
 - [x] Streamlit dashboard: All courses + per-course tabs (Overview, Grades, Notes, Plan, Deadlines, Sources)
 - [x] Agents: router + 4 agents (grades, planner, content, rules) over deterministic tools, ungrounded-number check
-- [x] `scripts.export_dashboard` -> JSON contract for the Lovable "Semester Orbit" UI (built on fictional demo data)
+- [x] Semester Orbit web UI built in the repo (`web/`, `scripts.serve_web`, ADR-013), replacing the Lovable prototype:
+      orbit + table home, 14-day timeline, needs-your-input, six tabs per course; checked on demo and real data,
+      desktop and phone width
 - [x] Architecture diagrams (`docs/architecture-overview.svg`, `docs/architecture-agents.svg`) in README + ARCHITECTURE.md
 - [x] Portfolio release prep: README rewritten (value prop, screenshots, why, results, keyless demo, limitations),
       `docs/EVALUATION.md` with measured aggregate results, fictional `demo_data/` + `scripts.make_demo_data`,
@@ -38,18 +40,19 @@ progress, notes, a plan and every deadline, deterministically, on a dashboard an
    hand-label the points-only ones; report misses and rejects next to successes.
 3. **Refresh path**: run `scripts.ingest_canvas` with a real read-only token; re-run the PrairieLearn collector and
    `scripts.crawl_site <CODE>`; then `scripts.syllabus_flow <CODE> --recheck` and `scripts.export_dashboard`.
-4. **Lovable UI**: with credits, ask Lovable for a visual pass of the course pages; then sync to GitHub, run locally and
-   swap in `data/dashboard.json` (never upload real data to Lovable).
+4. **Streamlit Grades tab misses entered marks per component**: `syllabus_flow.post_process` builds `component_checks`
+   before `apply_entries`, so an entered midterm shows as ungraded there (the course grade is right). The Orbit
+   exporter patches this (`_with_entries`); fix it at the source and drop the patch.
 5. **Quiz generation + eval** from practice exams that ship with answer keys (cited questions, Python marking).
 6. Optional cited LLM summaries on top of the extracted note outlines.
 
 ## Blockers / open questions
-- Lovable account is out of credits; its course pages (and possible type errors it mentioned) are unverified.
 - `CanvasAPI` has only been tested against a fake server (needs the student's token in `.env`).
 - One course site links a slide deck at a broken path (HTTP 503); a few image-only slides still leak OCR noise.
 - GitHub still serves one orphaned pre-rewrite commit by exact SHA (not on any branch); only GitHub Support can purge it.
 
 ## Decisions (newest first)
+- 2026-11-24 Orbit UI built in-repo instead of Lovable; served on 127.0.0.1 only. (ADR-013)
 - 2026-11-24 Repo made public; history rewritten first (noreply author, no personal terms) and force-pushed. **Why:** a
   portfolio repo must not expose the student's email, school or results. Personal checks read terms from `data/`.
 - 2026-11-24 Keyless demo = fictional `demo_data/` run through the real pipeline with recorded model responses.
@@ -63,8 +66,8 @@ progress, notes, a plan and every deadline, deterministically, on a dashboard an
 - 2026-11-23 Grade engine reproduces Canvas rules, checked against Canvas totals. (ADR-003)
 
 ## Verification status
-- Tests: 107 passing, `.venv/bin/python -m pytest -q`, 2026-11-24 (also on a fresh copy with a new venv); CI green on `77013eb`
+- Tests: 117 passing, `.venv/bin/python -m pytest -q`, 2026-11-24 (also on a fresh copy with a new venv); CI green on `77013eb`
 - Grade engine: matches Canvas's own totals wherever Canvas shows them; other courses hand-checked
 - Live: syllabus extraction (gemini-3.8-flash, 2 calls per course) reviewed by hand; agent smoke questions grounded
 - Evals: no scored eval yet
-- Not verified: ClaudeClient against the real API; Lovable course pages; snapshot freshness (pulls are manual)
+- Not verified: ClaudeClient against the real API; snapshot freshness (pulls are manual); Orbit UI in browsers other than Chromium

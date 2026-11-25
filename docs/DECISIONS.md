@@ -129,3 +129,16 @@ Short records of choices that shape the system. Newest at the bottom.
 - **Alternatives:** LLM-written notes and plans; one generalist agent.
 - **Why:** Deterministic views are free, instant, testable and never invent content. Fewer agents = simpler routing.
 - **Revisit if:** Students need prose summaries of lectures (add an optional, cited LLM notes pass on top of the outline).
+
+## ADR-013: Build the Orbit UI in the repo instead of Lovable
+- **Date:** 2026-11-24
+- **Decision:** A static page in `web/` (plain HTML/CSS/JS, no build step, no dependencies) draws
+  `/dashboard.json`, which `scripts/serve_web.py` builds fresh on every load with `scripts/export_dashboard.export` and
+  serves on 127.0.0.1 only. Grade bands, the average and the 14-day timeline are computed in the exporter, not in the
+  page. Course text is inserted with `textContent` only, and a Content-Security-Policy blocks other origins.
+- **Alternatives:** Keep iterating in Lovable (out of credits, its own invented data, real data could never go there);
+  a React/Vite app (adds a Node toolchain to a Python repo).
+- **Why:** It runs on real data locally without the data leaving the machine, ships with the repo and CI, and keeps the
+  "Python does the maths" rule checkable: the page has no grade arithmetic.
+- **Revisit if:** The UI needs editing (entering grades from the page) or hosting; then add POST routes behind the same
+  `user_inputs` code with tests, or move to a framework.

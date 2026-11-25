@@ -122,14 +122,14 @@ def test_overview_has_one_row_per_course(tmp_path):
 
 
 CONTRACT_COURSE_KEYS = {"code", "name", "grade", "progress", "needed", "pass_requirements", "warnings", "input_requests",
-                        "components", "notes", "plan", "deadlines", "sources"}
+                        "components", "notes", "plan", "deadlines", "sources", "band", "grade_is_course_grade"}
 
 
 def test_dashboard_export_matches_the_ui_contract(tmp_path):
     from scripts.export_dashboard import export
 
     out = export(NOW, make_store(tmp_path).root)
-    assert set(out) == {"generated_at", "courses", "ask_examples"}
+    assert set(out) == {"generated_at", "summary", "timeline", "courses", "ask_examples"}
     c = out["courses"][0]
     assert set(c) == CONTRACT_COURSE_KEYS
     assert set(c["grade"]) >= {"current_pct", "weight_graded_pct", "floor_pct", "ceiling_pct", "basis"}

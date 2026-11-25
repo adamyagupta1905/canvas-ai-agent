@@ -21,7 +21,8 @@ a tool). Grades, drop rules, targets, attendance limits, deadlines and plans are
 
 **Stack:** Python 3.13 · Pydantic · Streamlit · httpx + BeautifulSoup · pypdf / pypdfium2 + Tesseract OCR ·
 rank-bm25 · Gemini (`google-genai`) or Claude (`anthropic`) behind one adapter · pytest + GitHub Actions.
-A separate Lovable front end reads the same JSON contract (`scripts/export_dashboard.py`).
+A second front end, **Semester Orbit** (`web/`, plain HTML/CSS/JS), draws the same numbers from the JSON contract
+(`scripts/export_dashboard.py`).
 
 ## Results
 Full method, failures and caveats in [docs/EVALUATION.md](docs/EVALUATION.md) (measured 2026-11-24, real courses
@@ -33,7 +34,7 @@ reported in aggregate).
 | Syllabus weights grounded and summing to 100 (`gemini-3.8-flash`, 5 syllabi) | **5 / 5** |
 | Extracted weights vs Canvas group weights (3 weighted courses) | **16 / 16** components (13 exact, 2 split, 2 merged); 13 / 16 on the first pass |
 | Failures found on real data and fixed with regression tests | 10 (see EVALUATION.md) |
-| Offline tests | 107, run in CI on every push |
+| Offline tests | 117, run in CI on every push |
 
 Caveat: no held-out syllabi yet, so 16 / 16 is optimistic for unseen courses.
 
@@ -53,6 +54,10 @@ With no `data/` folder the dashboard opens the demo: All courses, then per-cours
 Deadlines, Sources. Run the offline tests:
 ```bash
 .venv/bin/python -m pytest -q
+```
+Or open the Orbit UI (all courses as planets, a 14-day timeline, the same six tabs per course) at http://127.0.0.1:8503:
+```bash
+.venv/bin/python -m scripts.serve_web
 ```
 Optional: `brew install tesseract` (or `apt-get install tesseract-ocr`) for OCR of image-only PDFs; the one real-OCR
 test is skipped without it.

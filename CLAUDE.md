@@ -17,7 +17,8 @@ notes, an exam study plan, quizzes with marking, and a live progress dashboard (
 - System dependency: Tesseract (`brew install tesseract`) for OCR; tests skip the real-OCR test without it
 - Ask the agents (paid, LLM_PROVIDER from .env): `.venv/bin/python -m scripts.ask --trace "What do I need in LAW201 for 80%?"`
 - Enter a grade the system cannot see + what to improve (free, recomputes): `.venv/bin/python -m scripts.enter_grade CS101 Midterm --score 31 --out-of 40 --source Gradescope --improve "LSP; test doubles"` (`--list` shows what is missing)
-- Export the dashboard JSON contract for the Lovable UI (free, local only, writes data/dashboard.json): `.venv/bin/python -m scripts.export_dashboard`
+- Export the dashboard JSON contract (free, local only, writes <data dir>/dashboard.json): `.venv/bin/python -m scripts.export_dashboard`
+- Orbit web UI (free, 127.0.0.1 only, builds the JSON on each load): `.venv/bin/python -m scripts.serve_web` (launch configs `orbit` :8503 real data, `orbit-demo` :8504)
 - Rebuild the fictional keyless demo (recorded model responses, real pipeline): `.venv/bin/python -m scripts.make_demo_data`
 - `COURSE_DATA_DIR=<folder>` points every script and the dashboard at another data folder (default `data/`; `demo_data/` for the demo)
 - Run dashboard (demo data): `.venv/bin/streamlit run app.py` (launch config `dashboard`, port 8501)
@@ -45,6 +46,7 @@ notes, an exam study plan, quizzes with marking, and a live progress dashboard (
 - `canvas_agent/component_check.py`: per-component rules vs Canvas, session counts, attendance, exam-date hints, syllabus-view course
 - `canvas_agent/syllabus.py`: LLM exam extraction + grounding check (quote must appear in syllabus)
 - `scripts/course_report.py`: per-course report over `data/canvas_snapshot.json`
+- `web/` + `scripts/serve_web.py`: Semester Orbit UI (static HTML/CSS/JS, no build); draws `/dashboard.json`, no grade maths in JS
 - `app.py`: Streamlit dashboard: All courses page + per-course tabs Overview · Grades · Notes · Plan · Deadlines · Sources (`?course=CODE`)
 - `demo_data/`: committed fictional demo (2 courses, frozen date); `tests/test_demo_data.py` guards it
 - `docs/EVALUATION.md`: measured results (aggregate), failures, caveats

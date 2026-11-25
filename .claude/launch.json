@@ -28,6 +28,30 @@
         "8502"
       ],
       "port": 8502
+    },
+    {
+      "name": "orbit",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": [
+        "-m",
+        "scripts.serve_web",
+        "--port",
+        "8503"
+      ],
+      "port": 8503
+    },
+    {
+      "name": "orbit-demo",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "COURSE_DATA_DIR=demo_data",
+        ".venv/bin/python",
+        "-m",
+        "scripts.serve_web",
+        "--port",
+        "8504"
+      ],
+      "port": 8504
     }
   ]
 }
