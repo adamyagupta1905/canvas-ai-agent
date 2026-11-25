@@ -214,7 +214,18 @@ def component_chart(c: dict) -> None:
     if not rows:
         return
     df = pd.DataFrame(rows)
-    df["Short"] = [f"C{int(m.group(1)):02d}" if (m := re.search(r"class\D{0,3}(\d{1,2})", n, re.I)) else n[:18] for n in df["Item"]]
+    def short(n: str) -> str:
+        if (m := re.search(r"class\D{0,3}(\d{1,2})", n, re.I)):
+            return f"C{int(m.group(1)):02d}"
+        tail = n.split(": ", 1)[1] if ": " in n else n  # 'Lab Assignments: LAB01 Onboarding' -> 'LAB01 Onboarding'
+        return tail.split()[0][:18] if tail.split() else n[:18]
+
+    labels, seen = [], {}
+    for n in df["Item"]:  # labels must be unique or Altair merges the bars
+        s = short(n)
+        seen[s] = seen.get(s, 0) + 1
+        labels.append(s if seen[s] == 1 else f"{s} ({seen[s]})")
+    df["Short"] = labels
     bars = alt.Chart(df).mark_bar().encode(
         x=alt.X("Short:N", sort=None, title=None, axis=alt.Axis(labelAngle=-45, labelLimit=160)),
         y=alt.Y("Score %:Q", scale=alt.Scale(domain=[0, 100])),
