@@ -1,0 +1,710 @@
+{
+ "course": "CS101",
+ "source": "https://course.example.org/cs101/syllabus",
+ "pages": 1,
+ "ocr_pages": [],
+ "empty_pages": [],
+ "chunks": 1,
+ "retrieved": {
+  "grading": [
+   "CS101-p1-c1"
+  ],
+  "exams": [
+   "CS101-p1-c1"
+  ],
+  "policies": [
+   "CS101-p1-c1"
+  ]
+ },
+ "facts": {
+  "components": [
+   {
+    "name": "Labs",
+    "weight_pct": 10.0,
+    "chunk_id": "CS101-p1-c1",
+    "source_quote": "Labs | 10%"
+   },
+   {
+    "name": "Project",
+    "weight_pct": 30.0,
+    "chunk_id": "CS101-p1-c1",
+    "source_quote": "Project | 30%"
+   },
+   {
+    "name": "Midterm",
+    "weight_pct": 20.0,
+    "chunk_id": "CS101-p1-c1",
+    "source_quote": "Midterm | 20%"
+   },
+   {
+    "name": "Final exam",
+    "weight_pct": 40.0,
+    "chunk_id": "CS101-p1-c1",
+    "source_quote": "Final exam | 40%"
+   }
+  ],
+  "exams": [
+   {
+    "kind": "midterm",
+    "title": "Midterm",
+    "exam_date": "2026-10-22",
+    "when_text": "October 22",
+    "chunk_id": "CS101-p1-c1",
+    "source_quote": "The midterm is on October 22."
+   },
+   {
+    "kind": "final",
+    "title": "Final exam",
+    "exam_date": "2026-12-15",
+    "when_text": "December 15",
+    "chunk_id": "CS101-p1-c1",
+    "source_quote": "The final exam is on December 15."
+   }
+  ],
+  "policies": [
+   {
+    "kind": "drop_rule",
+    "summary": "The lowest lab is dropped.",
+    "chunk_id": "CS101-p1-c1",
+    "source_quote": "The lowest lab mark is dropped."
+   }
+  ]
+ },
+ "rules": [
+  {
+   "component": "Labs",
+   "kind": "item_count",
+   "value": 8.0,
+   "aggregation": null,
+   "summary": "There are 8 labs.",
+   "chunk_id": "CS101-p1-c1",
+   "source_quote": "There are 8 labs."
+  },
+  {
+   "component": "Labs",
+   "kind": "drop_lowest",
+   "value": 1.0,
+   "aggregation": null,
+   "summary": "The lowest lab mark is dropped.",
+   "chunk_id": "CS101-p1-c1",
+   "source_quote": "The lowest lab mark is dropped."
+  },
+  {
+   "component": "Labs",
+   "kind": "late_penalty",
+   "value": null,
+   "aggregation": null,
+   "summary": "Late labs are not graded.",
+   "chunk_id": "CS101-p1-c1",
+   "source_quote": "Late labs are not graded."
+  },
+  {
+   "component": "Project",
+   "kind": "item_count",
+   "value": 4.0,
+   "aggregation": null,
+   "summary": "Four deliverables.",
+   "chunk_id": "CS101-p1-c1",
+   "source_quote": "The project has 4 deliverables, each weighted equally."
+  },
+  {
+   "component": "Project",
+   "kind": "aggregation",
+   "value": null,
+   "aggregation": "equal_weight",
+   "summary": "Deliverables weighted equally.",
+   "chunk_id": "CS101-p1-c1",
+   "source_quote": "The project has 4 deliverables, each weighted equally."
+  },
+  {
+   "component": "Midterm",
+   "kind": "pass_requirement",
+   "value": 50.0,
+   "aggregation": null,
+   "summary": "Exams must average 50%.",
+   "chunk_id": "CS101-p1-c1",
+   "source_quote": "You must average at least 50% across the midterm and final exam to pass the course."
+  },
+  {
+   "component": "Final exam",
+   "kind": "pass_requirement",
+   "value": 50.0,
+   "aggregation": null,
+   "summary": "Exams must average 50%.",
+   "chunk_id": "CS101-p1-c1",
+   "source_quote": "You must average at least 50% across the midterm and final exam to pass the course."
+  }
+ ],
+ "rule_context": {
+  "Labs": [
+   "CS101-p1-c1"
+  ],
+  "Project": [
+   "CS101-p1-c1"
+  ],
+  "Midterm": [
+   "CS101-p1-c1"
+  ],
+  "Final exam": [
+   "CS101-p1-c1"
+  ]
+ },
+ "rejected": [],
+ "checks": [
+  {
+   "name": "weights_sum_to_100",
+   "passed": true,
+   "detail": "grounded weights sum to 100.0"
+  },
+  {
+   "name": "no_duplicate_components",
+   "passed": true,
+   "detail": "none"
+  },
+  {
+   "name": "has_components",
+   "passed": true,
+   "detail": "4 grounded components"
+  }
+ ],
+ "reconcile": [
+  {
+   "syllabus_component": "Final exam",
+   "syllabus_weight": 40.0,
+   "canvas_group": "Final exam",
+   "canvas_weight": 40.0,
+   "status": "match",
+   "similarity": 1.0
+  },
+  {
+   "syllabus_component": "Midterm",
+   "syllabus_weight": 20.0,
+   "canvas_group": "Midterm",
+   "canvas_weight": 20.0,
+   "status": "match",
+   "similarity": 1.0
+  },
+  {
+   "syllabus_component": "Project",
+   "syllabus_weight": 30.0,
+   "canvas_group": "Project",
+   "canvas_weight": 30.0,
+   "status": "match",
+   "similarity": 1.0
+  },
+  {
+   "syllabus_component": "Labs",
+   "syllabus_weight": 10.0,
+   "canvas_group": "Labs",
+   "canvas_weight": 10.0,
+   "status": "match",
+   "similarity": 1.0
+  }
+ ],
+ "component_checks": [
+  {
+   "component": "Labs",
+   "syllabus_weight": 10.0,
+   "canvas_groups": [
+    "Labs"
+   ],
+   "canvas_weight": 10.0,
+   "items_in_canvas": 8,
+   "scored": 7,
+   "expected_items": 8,
+   "expected_source": "syllabus: \"There are 8 labs.\"",
+   "sessions_total": null,
+   "remaining_by_syllabus": 1,
+   "numbering_gaps": [],
+   "drop_syllabus": 1,
+   "never_drop": [],
+   "drop_canvas": 1,
+   "aggregation_syllabus": null,
+   "equal_points_in_canvas": true,
+   "completion_based": false,
+   "avg_canvas_rules": 95.0,
+   "avg_syllabus_rules": 95.0,
+   "items": [
+    {
+     "name": "Lab 1",
+     "points": 10.0,
+     "score": 10.0,
+     "pct": 100.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Lab 2",
+     "points": 10.0,
+     "score": 9.0,
+     "pct": 90.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Lab 3",
+     "points": 10.0,
+     "score": 10.0,
+     "pct": 100.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Lab 4",
+     "points": 10.0,
+     "score": 8.0,
+     "pct": 80.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Lab 5",
+     "points": 10.0,
+     "score": 10.0,
+     "pct": 100.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Lab 6",
+     "points": 10.0,
+     "score": 0.0,
+     "pct": 0.0,
+     "dropped_syllabus": true,
+     "dropped_canvas": true
+    },
+    {
+     "name": "Lab 7",
+     "points": 10.0,
+     "score": 10.0,
+     "pct": 100.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Lab 8",
+     "points": 10.0,
+     "score": null,
+     "pct": null,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    }
+   ],
+   "flags": [],
+   "rules": [
+    "item_count: There are 8 labs. (\"There are 8 labs.\", CS101-p1-c1)",
+    "drop_lowest: The lowest lab mark is dropped. (\"The lowest lab mark is dropped.\", CS101-p1-c1)",
+    "late_penalty: Late labs are not graded. (\"Late labs are not graded.\", CS101-p1-c1)"
+   ]
+  },
+  {
+   "component": "Project",
+   "syllabus_weight": 30.0,
+   "canvas_groups": [
+    "Project"
+   ],
+   "canvas_weight": 30.0,
+   "items_in_canvas": 4,
+   "scored": 2,
+   "expected_items": 4,
+   "expected_source": "syllabus: \"The project has 4 deliverables, each weighted equally.\"",
+   "sessions_total": null,
+   "remaining_by_syllabus": 2,
+   "numbering_gaps": [],
+   "drop_syllabus": null,
+   "never_drop": [],
+   "drop_canvas": 0,
+   "aggregation_syllabus": "equal_weight",
+   "equal_points_in_canvas": true,
+   "completion_based": false,
+   "avg_canvas_rules": 80.0,
+   "avg_syllabus_rules": 80.0,
+   "items": [
+    {
+     "name": "D1 Requirements",
+     "points": 100.0,
+     "score": 70.0,
+     "pct": 70.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "D2 Design",
+     "points": 100.0,
+     "score": 90.0,
+     "pct": 90.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "D3 Implementation",
+     "points": 100.0,
+     "score": null,
+     "pct": null,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "D4 Final release",
+     "points": 100.0,
+     "score": null,
+     "pct": null,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    }
+   ],
+   "flags": [],
+   "rules": [
+    "item_count: Four deliverables. (\"The project has 4 deliverables, each weighted equally.\", CS101-p1-c1)",
+    "aggregation: Deliverables weighted equally. (\"The project has 4 deliverables, each weighted equally.\", CS101-p1-c1)"
+   ]
+  },
+  {
+   "component": "Midterm",
+   "syllabus_weight": 20.0,
+   "canvas_groups": [
+    "Midterm"
+   ],
+   "canvas_weight": 20.0,
+   "items_in_canvas": 1,
+   "scored": 1,
+   "expected_items": null,
+   "expected_source": null,
+   "sessions_total": null,
+   "remaining_by_syllabus": null,
+   "numbering_gaps": [],
+   "drop_syllabus": null,
+   "never_drop": [],
+   "drop_canvas": 0,
+   "aggregation_syllabus": null,
+   "equal_points_in_canvas": true,
+   "completion_based": false,
+   "avg_canvas_rules": 78.0,
+   "avg_syllabus_rules": 78.0,
+   "items": [
+    {
+     "name": "Midterm",
+     "points": 100.0,
+     "score": 78.0,
+     "pct": 78.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    }
+   ],
+   "flags": [],
+   "rules": [
+    "pass_requirement: Exams must average 50%. (\"You must average at least 50% across the midterm and final exam to pass the course.\", CS101-p1-c1)"
+   ]
+  },
+  {
+   "component": "Final exam",
+   "syllabus_weight": 40.0,
+   "canvas_groups": [
+    "Final exam"
+   ],
+   "canvas_weight": 40.0,
+   "items_in_canvas": 0,
+   "scored": 0,
+   "expected_items": null,
+   "expected_source": null,
+   "sessions_total": null,
+   "remaining_by_syllabus": null,
+   "numbering_gaps": [],
+   "drop_syllabus": null,
+   "never_drop": [],
+   "drop_canvas": 0,
+   "aggregation_syllabus": null,
+   "equal_points_in_canvas": true,
+   "completion_based": false,
+   "avg_canvas_rules": null,
+   "avg_syllabus_rules": null,
+   "items": [],
+   "flags": [
+    "No Canvas items found for this component yet."
+   ],
+   "rules": [
+    "pass_requirement: Exams must average 50%. (\"You must average at least 50% across the midterm and final exam to pass the course.\", CS101-p1-c1)"
+   ]
+  }
+ ],
+ "pass_requirements": [
+  {
+   "components": [
+    "Midterm",
+    "Final exam"
+   ],
+   "threshold_pct": 50.0,
+   "current_pct": 78.0,
+   "weight_graded": 20.0,
+   "weight_remaining": 40.0,
+   "needed_on_remaining_pct": 36.0,
+   "status": "on_track",
+   "quote": "You must average at least 50% across the midterm and final exam to pass the course."
+  }
+ ],
+ "attendance_check": null,
+ "exam_date_hints": [],
+ "past_exams_without_score": [],
+ "user_entries_applied": [],
+ "input_requests": [],
+ "syllabus_view_course": {
+  "name": "Software Design",
+  "weighted": true,
+  "omit_from_final": [],
+  "groups": [
+   {
+    "name": "Labs",
+    "weight": 10.0,
+    "rules": {
+     "drop_lowest": 1
+    },
+    "items": [
+     [
+      "Lab 1",
+      null,
+      10.0,
+      "graded",
+      10.0,
+      false
+     ],
+     [
+      "Lab 2",
+      null,
+      10.0,
+      "graded",
+      9.0,
+      false
+     ],
+     [
+      "Lab 3",
+      null,
+      10.0,
+      "graded",
+      10.0,
+      false
+     ],
+     [
+      "Lab 4",
+      null,
+      10.0,
+      "graded",
+      8.0,
+      false
+     ],
+     [
+      "Lab 5",
+      null,
+      10.0,
+      "graded",
+      10.0,
+      false
+     ],
+     [
+      "Lab 6",
+      null,
+      10.0,
+      "graded",
+      0.0,
+      false
+     ],
+     [
+      "Lab 7",
+      null,
+      10.0,
+      "graded",
+      10.0,
+      false
+     ],
+     [
+      "Lab 8",
+      null,
+      10.0,
+      "unsubmitted",
+      null,
+      false
+     ]
+    ]
+   },
+   {
+    "name": "Project",
+    "weight": 30.0,
+    "rules": {},
+    "items": [
+     [
+      "D1 Requirements",
+      null,
+      100.0,
+      "graded",
+      70.0,
+      false
+     ],
+     [
+      "D2 Design",
+      null,
+      100.0,
+      "graded",
+      90.0,
+      false
+     ],
+     [
+      "D3 Implementation",
+      null,
+      100.0,
+      "unsubmitted",
+      null,
+      false
+     ],
+     [
+      "D4 Final release",
+      null,
+      100.0,
+      "unsubmitted",
+      null,
+      false
+     ]
+    ]
+   },
+   {
+    "name": "Midterm",
+    "weight": 20.0,
+    "rules": {},
+    "items": [
+     [
+      "Midterm",
+      null,
+      100.0,
+      "graded",
+      78.0,
+      false
+     ]
+    ]
+   },
+   {
+    "name": "Final exam",
+    "weight": 40.0,
+    "rules": {},
+    "items": []
+   }
+  ]
+ },
+ "syllabus_view_grade": {
+  "course": "CS101",
+  "weighted": true,
+  "current_pct": 81.83,
+  "canvas_final_pct": 59.57,
+  "floor_pct": 35.74,
+  "ceiling_pct": 92.17,
+  "weight_determined": 60.0,
+  "groups": [
+   {
+    "name": "Labs",
+    "weight": 10.0,
+    "kept": 6,
+    "dropped": [
+     "Lab 6"
+    ],
+    "earned": 57.0,
+    "possible": 60.0,
+    "pct": 95.0,
+    "contribution": 9.5
+   },
+   {
+    "name": "Project",
+    "weight": 30.0,
+    "kept": 2,
+    "dropped": [],
+    "earned": 160.0,
+    "possible": 200.0,
+    "pct": 80.0,
+    "contribution": 24.0
+   },
+   {
+    "name": "Midterm",
+    "weight": 20.0,
+    "kept": 1,
+    "dropped": [],
+    "earned": 78.0,
+    "possible": 100.0,
+    "pct": 78.0,
+    "contribution": 15.6
+   },
+   {
+    "name": "Final exam",
+    "weight": 40.0,
+    "kept": 0,
+    "dropped": [],
+    "earned": 0.0,
+    "possible": 0.0,
+    "pct": null,
+    "contribution": null
+   }
+  ],
+  "canvas_check": null,
+  "warnings": [
+   "'Final exam' (40.0%) has no items in Canvas yet; it is in the floor/ceiling but not the current grade."
+  ]
+ },
+ "needed": {
+  "60": 42.99,
+  "70": 60.71,
+  "80": 78.43,
+  "90": 96.15
+ },
+ "canvas_view_grade": {
+  "course": "CS101",
+  "weighted": true,
+  "current_pct": 81.83,
+  "canvas_final_pct": 59.57,
+  "floor_pct": 35.74,
+  "ceiling_pct": 92.17,
+  "weight_determined": 60.0,
+  "groups": [
+   {
+    "name": "Labs",
+    "weight": 10.0,
+    "kept": 6,
+    "dropped": [
+     "Lab 6"
+    ],
+    "earned": 57.0,
+    "possible": 60.0,
+    "pct": 95.0,
+    "contribution": 9.5
+   },
+   {
+    "name": "Project",
+    "weight": 30.0,
+    "kept": 2,
+    "dropped": [],
+    "earned": 160.0,
+    "possible": 200.0,
+    "pct": 80.0,
+    "contribution": 24.0
+   },
+   {
+    "name": "Midterm",
+    "weight": 20.0,
+    "kept": 1,
+    "dropped": [],
+    "earned": 78.0,
+    "possible": 100.0,
+    "pct": 78.0,
+    "contribution": 15.6
+   },
+   {
+    "name": "Final exam",
+    "weight": 40.0,
+    "kept": 0,
+    "dropped": [],
+    "earned": 0.0,
+    "possible": 0.0,
+    "pct": null,
+    "contribution": null
+   }
+  ],
+  "canvas_check": null,
+  "warnings": [
+   "'Final exam' (40%) has no items in Canvas yet; it is in the floor/ceiling but not the current grade."
+  ]
+ }
+}

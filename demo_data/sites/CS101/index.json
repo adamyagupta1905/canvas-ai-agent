@@ -1,0 +1,182 @@
+[
+ {
+  "id": "CS101-01-introduction.pdf-p1",
+  "url": "https://course.example.org/cs101/lectures/01-introduction.pdf",
+  "kind": "lecture",
+  "title": "01-introduction.pdf",
+  "page": 1,
+  "text": "01 - Introduction to Software Design\nCS101\nDemo Instructor",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-01-introduction.pdf-p2",
+  "url": "https://course.example.org/cs101/lectures/01-introduction.pdf",
+  "kind": "lecture",
+  "title": "01-introduction.pdf",
+  "page": 2,
+  "text": "CS101\nLearning Goals\n\u25cfExplain why design decisions change the cost of future work.",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-01-introduction.pdf-p3",
+  "url": "https://course.example.org/cs101/lectures/01-introduction.pdf",
+  "kind": "lecture",
+  "title": "01-introduction.pdf",
+  "page": 3,
+  "text": "CS101\nWhat is software design\nTrade-offs everywhere",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-01-introduction.pdf-p4",
+  "url": "https://course.example.org/cs101/lectures/01-introduction.pdf",
+  "kind": "lecture",
+  "title": "01-introduction.pdf",
+  "page": 4,
+  "text": "CS101\nCourse roadmap\nLabs and project",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-02-coupling.pdf-p1",
+  "url": "https://course.example.org/cs101/lectures/02-coupling.pdf",
+  "kind": "lecture",
+  "title": "02-coupling.pdf",
+  "page": 1,
+  "text": "02 - Coupling and Cohesion\nCS101\nDemo Instructor",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-02-coupling.pdf-p2",
+  "url": "https://course.example.org/cs101/lectures/02-coupling.pdf",
+  "kind": "lecture",
+  "title": "02-coupling.pdf",
+  "page": 2,
+  "text": "CS101\nLearning Goals\n\u25cfIdentify coupling and evaluate the cost of a change.",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-02-coupling.pdf-p3",
+  "url": "https://course.example.org/cs101/lectures/02-coupling.pdf",
+  "kind": "lecture",
+  "title": "02-coupling.pdf",
+  "page": 3,
+  "text": "CS101\nDependencies in code\nDegree, locality, strength",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-02-coupling.pdf-p4",
+  "url": "https://course.example.org/cs101/lectures/02-coupling.pdf",
+  "kind": "lecture",
+  "title": "02-coupling.pdf",
+  "page": 4,
+  "text": "CS101\nCohesion\nKinds of binding",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-03-testing.pdf-p1",
+  "url": "https://course.example.org/cs101/lectures/03-testing.pdf",
+  "kind": "lecture",
+  "title": "03-testing.pdf",
+  "page": 1,
+  "text": "03 - Testing and Test Doubles\nCS101\nDemo Instructor",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-03-testing.pdf-p2",
+  "url": "https://course.example.org/cs101/lectures/03-testing.pdf",
+  "kind": "lecture",
+  "title": "03-testing.pdf",
+  "page": 2,
+  "text": "CS101\nLearning Goals\n\u25cfWrite tests that survive refactoring.",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-03-testing.pdf-p3",
+  "url": "https://course.example.org/cs101/lectures/03-testing.pdf",
+  "kind": "lecture",
+  "title": "03-testing.pdf",
+  "page": 3,
+  "text": "CS101\nUnit tests\nArrange, act, assert",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-03-testing.pdf-p4",
+  "url": "https://course.example.org/cs101/lectures/03-testing.pdf",
+  "kind": "lecture",
+  "title": "03-testing.pdf",
+  "page": 4,
+  "text": "CS101\nTest doubles\nStubs, mocks and fakes",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-04-patterns.pdf-p1",
+  "url": "https://course.example.org/cs101/lectures/04-patterns.pdf",
+  "kind": "lecture",
+  "title": "04-patterns.pdf",
+  "page": 1,
+  "text": "04 - Design Patterns\nCS101\nDemo Instructor",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-04-patterns.pdf-p2",
+  "url": "https://course.example.org/cs101/lectures/04-patterns.pdf",
+  "kind": "lecture",
+  "title": "04-patterns.pdf",
+  "page": 2,
+  "text": "CS101\nLearning Goals\n\u25cfChoose a pattern that makes a likely change cheap.",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-04-patterns.pdf-p3",
+  "url": "https://course.example.org/cs101/lectures/04-patterns.pdf",
+  "kind": "lecture",
+  "title": "04-patterns.pdf",
+  "page": 3,
+  "text": "CS101\nAdapter\nWrapping a legacy API",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-04-patterns.pdf-p4",
+  "url": "https://course.example.org/cs101/lectures/04-patterns.pdf",
+  "kind": "lecture",
+  "title": "04-patterns.pdf",
+  "page": 4,
+  "text": "CS101\nObserver\nDecoupling publishers from subscribers",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-05-apis.pdf-p1",
+  "url": "https://course.example.org/cs101/lectures/05-apis.pdf",
+  "kind": "lecture",
+  "title": "05-apis.pdf",
+  "page": 1,
+  "text": "05 - API Design and Versioning\nCS101\nDemo Instructor",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-05-apis.pdf-p2",
+  "url": "https://course.example.org/cs101/lectures/05-apis.pdf",
+  "kind": "lecture",
+  "title": "05-apis.pdf",
+  "page": 2,
+  "text": "CS101\nLearning Goals\n\u25cfEvolve an API without breaking its clients.",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-05-apis.pdf-p3",
+  "url": "https://course.example.org/cs101/lectures/05-apis.pdf",
+  "kind": "lecture",
+  "title": "05-apis.pdf",
+  "page": 3,
+  "text": "CS101\nREST resources\nNouns, verbs and status codes",
+  "sha256": "demo"
+ },
+ {
+  "id": "CS101-05-apis.pdf-p4",
+  "url": "https://course.example.org/cs101/lectures/05-apis.pdf",
+  "kind": "lecture",
+  "title": "05-apis.pdf",
+  "page": 4,
+  "text": "CS101\nSemantic versioning\nMajor, minor, patch",
+  "sha256": "demo"
+ }
+]

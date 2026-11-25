@@ -1,0 +1,822 @@
+{
+ "course": "LAW201",
+ "source": "/Users/adamyagupta/Desktop/projects/canvas-ai-agent/demo_data/syllabi/LAW201.pdf",
+ "pages": 1,
+ "ocr_pages": [],
+ "empty_pages": [],
+ "chunks": 1,
+ "retrieved": {
+  "grading": [
+   "LAW201-p1-c1"
+  ],
+  "exams": [
+   "LAW201-p1-c1"
+  ],
+  "policies": [
+   "LAW201-p1-c1"
+  ]
+ },
+ "facts": {
+  "components": [
+   {
+    "name": "In-class exercises",
+    "weight_pct": 10.0,
+    "chunk_id": "LAW201-p1-c1",
+    "source_quote": "In-class exercises 10%"
+   },
+   {
+    "name": "Midterm exam",
+    "weight_pct": 35.0,
+    "chunk_id": "LAW201-p1-c1",
+    "source_quote": "Midterm exam 35%"
+   },
+   {
+    "name": "Final exam",
+    "weight_pct": 40.0,
+    "chunk_id": "LAW201-p1-c1",
+    "source_quote": "Final exam 40%"
+   },
+   {
+    "name": "Oral exam",
+    "weight_pct": 15.0,
+    "chunk_id": "LAW201-p1-c1",
+    "source_quote": "Oral exam 15%"
+   }
+  ],
+  "exams": [
+   {
+    "kind": "midterm",
+    "title": "Midterm exam",
+    "exam_date": "2026-10-29",
+    "when_text": "October 29",
+    "chunk_id": "LAW201-p1-c1",
+    "source_quote": "Midterm Examination Date: October 29."
+   },
+   {
+    "kind": "final",
+    "title": "Final exam",
+    "exam_date": "2026-12-18",
+    "when_text": "December 18",
+    "chunk_id": "LAW201-p1-c1",
+    "source_quote": "The final exam is on December 18."
+   }
+  ],
+  "policies": [
+   {
+    "kind": "pass_requirement",
+    "summary": "Missing more than 20% of classes may exclude you from the final.",
+    "chunk_id": "LAW201-p1-c1",
+    "source_quote": "Students missing more than 20% of classes may be excluded from the final exam."
+   }
+  ]
+ },
+ "rules": [
+  {
+   "component": "In-class exercises",
+   "kind": "drop_lowest",
+   "value": 2.0,
+   "aggregation": null,
+   "summary": "Two lowest dropped.",
+   "chunk_id": "LAW201-p1-c1",
+   "source_quote": "Your two lowest in-class exercise scores will be dropped."
+  },
+  {
+   "component": "In-class exercises",
+   "kind": "missed_work",
+   "value": null,
+   "aggregation": null,
+   "summary": "No make-ups.",
+   "chunk_id": "LAW201-p1-c1",
+   "source_quote": "In-class exercises cannot be made up."
+  }
+ ],
+ "rule_context": {
+  "In-class exercises": [
+   "LAW201-p1-c1"
+  ],
+  "Midterm exam": [
+   "LAW201-p1-c1"
+  ],
+  "Final exam": [
+   "LAW201-p1-c1"
+  ],
+  "Oral exam": [
+   "LAW201-p1-c1"
+  ]
+ },
+ "rejected": [],
+ "checks": [
+  {
+   "name": "weights_sum_to_100",
+   "passed": true,
+   "detail": "grounded weights sum to 100.0"
+  },
+  {
+   "name": "no_duplicate_components",
+   "passed": true,
+   "detail": "none"
+  },
+  {
+   "name": "has_components",
+   "passed": true,
+   "detail": "4 grounded components"
+  }
+ ],
+ "reconcile": [
+  {
+   "syllabus_component": "Oral exam",
+   "syllabus_weight": 15.0,
+   "canvas_group": "Oral Exam",
+   "canvas_weight": 15.0,
+   "status": "match",
+   "similarity": 1.0
+  },
+  {
+   "syllabus_component": "Final exam",
+   "syllabus_weight": 40.0,
+   "canvas_group": "Final Exam",
+   "canvas_weight": 40.0,
+   "status": "match",
+   "similarity": 1.0
+  },
+  {
+   "syllabus_component": "Midterm exam",
+   "syllabus_weight": 35.0,
+   "canvas_group": "Midterm",
+   "canvas_weight": 35.0,
+   "status": "match",
+   "similarity": 1.0
+  },
+  {
+   "syllabus_component": "In-class exercises",
+   "syllabus_weight": 10.0,
+   "canvas_group": "In-Class Exercises",
+   "canvas_weight": 10.0,
+   "status": "match",
+   "similarity": 1.0
+  }
+ ],
+ "component_checks": [
+  {
+   "component": "In-class exercises",
+   "syllabus_weight": 10.0,
+   "canvas_groups": [
+    "In-Class Exercises"
+   ],
+   "canvas_weight": 10.0,
+   "items_in_canvas": 20,
+   "scored": 17,
+   "expected_items": 20,
+   "expected_source": "counted by Python from Canvas Modules titles (Class 01-21): 21 classes, 1 with no assessed item [13]",
+   "sessions_total": 21,
+   "remaining_by_syllabus": 3,
+   "numbering_gaps": [],
+   "drop_syllabus": 2,
+   "never_drop": [],
+   "drop_canvas": 2,
+   "aggregation_syllabus": null,
+   "equal_points_in_canvas": true,
+   "completion_based": false,
+   "avg_canvas_rules": 72.67,
+   "avg_syllabus_rules": 72.67,
+   "items": [
+    {
+     "name": "Class 01 In-Class Exercise",
+     "points": 5.0,
+     "score": 4.0,
+     "pct": 80.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 02 In-Class Exercise",
+     "points": 5.0,
+     "score": 0.0,
+     "pct": 0.0,
+     "dropped_syllabus": true,
+     "dropped_canvas": true
+    },
+    {
+     "name": "Class 03 In-Class Exercise",
+     "points": 5.0,
+     "score": 5.0,
+     "pct": 100.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 04 In-Class Exercise",
+     "points": 5.0,
+     "score": 3.0,
+     "pct": 60.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 05 In-Class Exercise",
+     "points": 5.0,
+     "score": 0.0,
+     "pct": 0.0,
+     "dropped_syllabus": true,
+     "dropped_canvas": true
+    },
+    {
+     "name": "Class 06 In-Class Exercise",
+     "points": 5.0,
+     "score": 4.5,
+     "pct": 90.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 07 In-Class Exercise",
+     "points": 5.0,
+     "score": 4.0,
+     "pct": 80.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 08 In-Class Exercise",
+     "points": 5.0,
+     "score": 5.0,
+     "pct": 100.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 09 In-Class Exercise",
+     "points": 5.0,
+     "score": 3.5,
+     "pct": 70.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 10 In-Class Exercise",
+     "points": 5.0,
+     "score": 0.0,
+     "pct": 0.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 11 In-Class Exercise",
+     "points": 5.0,
+     "score": 4.0,
+     "pct": 80.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 12 In-Class Exercise",
+     "points": 5.0,
+     "score": 5.0,
+     "pct": 100.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 14 In-Class Exercise",
+     "points": 5.0,
+     "score": 4.5,
+     "pct": 90.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 15 In-Class Exercise",
+     "points": 5.0,
+     "score": 0.0,
+     "pct": 0.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 16 In-Class Exercise",
+     "points": 5.0,
+     "score": 4.0,
+     "pct": 80.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 17 In-Class Exercise",
+     "points": 5.0,
+     "score": 3.5,
+     "pct": 70.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 18 In-Class Exercise",
+     "points": 5.0,
+     "score": 4.5,
+     "pct": 90.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 19 In-Class Exercise",
+     "points": 5.0,
+     "score": null,
+     "pct": null,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 20 In-Class Exercise",
+     "points": 5.0,
+     "score": null,
+     "pct": null,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    },
+    {
+     "name": "Class 21 In-Class Exercise",
+     "points": 5.0,
+     "score": null,
+     "pct": null,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    }
+   ],
+   "flags": [
+    "No item for class(es) [13]: the module for that class has no assessed item, so this is by design, not a missing grade.",
+    "Expected item count 20 was counted by Python from Canvas Modules titles (Class 01-21): 21 classes, 1 with no assessed item [13]."
+   ],
+   "rules": [
+    "drop_lowest: Two lowest dropped. (\"Your two lowest in-class exercise scores will be dropped.\", LAW201-p1-c1)",
+    "missed_work: No make-ups. (\"In-class exercises cannot be made up.\", LAW201-p1-c1)"
+   ]
+  },
+  {
+   "component": "Midterm exam",
+   "syllabus_weight": 35.0,
+   "canvas_groups": [
+    "Midterm"
+   ],
+   "canvas_weight": 35.0,
+   "items_in_canvas": 1,
+   "scored": 1,
+   "expected_items": null,
+   "expected_source": null,
+   "sessions_total": null,
+   "remaining_by_syllabus": null,
+   "numbering_gaps": [],
+   "drop_syllabus": null,
+   "never_drop": [],
+   "drop_canvas": 0,
+   "aggregation_syllabus": null,
+   "equal_points_in_canvas": true,
+   "completion_based": false,
+   "avg_canvas_rules": 84.0,
+   "avg_syllabus_rules": 84.0,
+   "items": [
+    {
+     "name": "Midterm",
+     "points": 100.0,
+     "score": 84.0,
+     "pct": 84.0,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    }
+   ],
+   "flags": [],
+   "rules": []
+  },
+  {
+   "component": "Final exam",
+   "syllabus_weight": 40.0,
+   "canvas_groups": [
+    "Final Exam"
+   ],
+   "canvas_weight": 40.0,
+   "items_in_canvas": 0,
+   "scored": 0,
+   "expected_items": null,
+   "expected_source": null,
+   "sessions_total": null,
+   "remaining_by_syllabus": null,
+   "numbering_gaps": [],
+   "drop_syllabus": null,
+   "never_drop": [],
+   "drop_canvas": 0,
+   "aggregation_syllabus": null,
+   "equal_points_in_canvas": true,
+   "completion_based": false,
+   "avg_canvas_rules": null,
+   "avg_syllabus_rules": null,
+   "items": [],
+   "flags": [
+    "No Canvas items found for this component yet."
+   ],
+   "rules": []
+  },
+  {
+   "component": "Oral exam",
+   "syllabus_weight": 15.0,
+   "canvas_groups": [
+    "Oral Exam"
+   ],
+   "canvas_weight": 15.0,
+   "items_in_canvas": 1,
+   "scored": 0,
+   "expected_items": null,
+   "expected_source": null,
+   "sessions_total": null,
+   "remaining_by_syllabus": null,
+   "numbering_gaps": [],
+   "drop_syllabus": null,
+   "never_drop": [],
+   "drop_canvas": 0,
+   "aggregation_syllabus": null,
+   "equal_points_in_canvas": true,
+   "completion_based": false,
+   "avg_canvas_rules": null,
+   "avg_syllabus_rules": null,
+   "items": [
+    {
+     "name": "Oral exam",
+     "points": 15.0,
+     "score": null,
+     "pct": null,
+     "dropped_syllabus": false,
+     "dropped_canvas": false
+    }
+   ],
+   "flags": [],
+   "rules": []
+  }
+ ],
+ "pass_requirements": [],
+ "attendance_check": {
+  "status": "possible",
+  "thresholds_pct": [
+   15.0,
+   20.0
+  ],
+  "allowed_absences": {
+   "15": 3,
+   "20": 4
+  },
+  "sessions_total": 21,
+  "sessions_held": 18,
+  "sessions_remaining": 3,
+  "possible_absences": [
+   "Class 02 In-Class Exercise",
+   "Class 05 In-Class Exercise",
+   "Class 10 In-Class Exercise",
+   "Class 15 In-Class Exercise"
+  ],
+  "possible_absence_pct": 19.0,
+  "exceeds": [
+   15.0
+  ],
+  "quotes": [
+   "Students missing more than 20% of classes may be excluded from the final exam.",
+   "Students who miss more than 15% of classes will receive an attendance warning."
+  ],
+  "caveat": "A zero may be a wrong or incomplete answer rather than an absence; check with your attendance record."
+ },
+ "exam_date_hints": [],
+ "past_exams_without_score": [],
+ "user_entries_applied": [],
+ "input_requests": [],
+ "syllabus_view_course": {
+  "name": "Commercial Law",
+  "weighted": true,
+  "omit_from_final": [],
+  "groups": [
+   {
+    "name": "In-class exercises",
+    "weight": 10.0,
+    "rules": {
+     "drop_lowest": 2
+    },
+    "items": [
+     [
+      "Class 01 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      4.0,
+      false
+     ],
+     [
+      "Class 02 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      0.0,
+      false
+     ],
+     [
+      "Class 03 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      5.0,
+      false
+     ],
+     [
+      "Class 04 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      3.0,
+      false
+     ],
+     [
+      "Class 05 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      0.0,
+      false
+     ],
+     [
+      "Class 06 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      4.5,
+      false
+     ],
+     [
+      "Class 07 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      4.0,
+      false
+     ],
+     [
+      "Class 08 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      5.0,
+      false
+     ],
+     [
+      "Class 09 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      3.5,
+      false
+     ],
+     [
+      "Class 10 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      0.0,
+      false
+     ],
+     [
+      "Class 11 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      4.0,
+      false
+     ],
+     [
+      "Class 12 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      5.0,
+      false
+     ],
+     [
+      "Class 14 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      4.5,
+      false
+     ],
+     [
+      "Class 15 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      0.0,
+      false
+     ],
+     [
+      "Class 16 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      4.0,
+      false
+     ],
+     [
+      "Class 17 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      3.5,
+      false
+     ],
+     [
+      "Class 18 In-Class Exercise",
+      null,
+      5.0,
+      "graded",
+      4.5,
+      false
+     ],
+     [
+      "Class 19 In-Class Exercise",
+      null,
+      5.0,
+      "unsubmitted",
+      null,
+      false
+     ],
+     [
+      "Class 20 In-Class Exercise",
+      null,
+      5.0,
+      "unsubmitted",
+      null,
+      false
+     ],
+     [
+      "Class 21 In-Class Exercise",
+      null,
+      5.0,
+      "unsubmitted",
+      null,
+      false
+     ]
+    ]
+   },
+   {
+    "name": "Midterm exam",
+    "weight": 35.0,
+    "rules": {},
+    "items": [
+     [
+      "Midterm",
+      null,
+      100.0,
+      "graded",
+      84.0,
+      false
+     ]
+    ]
+   },
+   {
+    "name": "Final exam",
+    "weight": 40.0,
+    "rules": {},
+    "items": []
+   },
+   {
+    "name": "Oral exam",
+    "weight": 15.0,
+    "rules": {},
+    "items": [
+     [
+      "Oral exam",
+      null,
+      15.0,
+      "unsubmitted",
+      null,
+      false
+     ]
+    ]
+   }
+  ]
+ },
+ "syllabus_view_grade": {
+  "course": "LAW201",
+  "weighted": true,
+  "current_pct": 81.48,
+  "canvas_final_pct": 59.09,
+  "floor_pct": 35.46,
+  "ceiling_pct": 92.12,
+  "weight_determined": 45.0,
+  "groups": [
+   {
+    "name": "In-class exercises",
+    "weight": 10.0,
+    "kept": 15,
+    "dropped": [
+     "Class 02 In-Class Exercise",
+     "Class 05 In-Class Exercise"
+    ],
+    "earned": 54.5,
+    "possible": 75.0,
+    "pct": 72.6667,
+    "contribution": 7.2667
+   },
+   {
+    "name": "Midterm exam",
+    "weight": 35.0,
+    "kept": 1,
+    "dropped": [],
+    "earned": 84.0,
+    "possible": 100.0,
+    "pct": 84.0,
+    "contribution": 29.4
+   },
+   {
+    "name": "Final exam",
+    "weight": 40.0,
+    "kept": 0,
+    "dropped": [],
+    "earned": 0.0,
+    "possible": 0.0,
+    "pct": null,
+    "contribution": null
+   },
+   {
+    "name": "Oral exam",
+    "weight": 15.0,
+    "kept": 0,
+    "dropped": [],
+    "earned": 0.0,
+    "possible": 0.0,
+    "pct": null,
+    "contribution": null
+   }
+  ],
+  "canvas_check": null,
+  "warnings": [
+   "'Final exam' (40.0%) has no items in Canvas yet; it is in the floor/ceiling but not the current grade.",
+   "'Oral exam' (15.0%) has no released scores yet (not done, not marked, or marked in another tool)."
+  ]
+ },
+ "needed": {
+  "60": 43.31,
+  "70": 60.96,
+  "80": 78.61,
+  "90": 96.25
+ },
+ "canvas_view_grade": {
+  "course": "LAW201",
+  "weighted": true,
+  "current_pct": 81.48,
+  "canvas_final_pct": 59.09,
+  "floor_pct": 35.46,
+  "ceiling_pct": 92.12,
+  "weight_determined": 45.0,
+  "groups": [
+   {
+    "name": "In-Class Exercises",
+    "weight": 10.0,
+    "kept": 15,
+    "dropped": [
+     "Class 02 In-Class Exercise",
+     "Class 05 In-Class Exercise"
+    ],
+    "earned": 54.5,
+    "possible": 75.0,
+    "pct": 72.6667,
+    "contribution": 7.2667
+   },
+   {
+    "name": "Midterm",
+    "weight": 35.0,
+    "kept": 1,
+    "dropped": [],
+    "earned": 84.0,
+    "possible": 100.0,
+    "pct": 84.0,
+    "contribution": 29.4
+   },
+   {
+    "name": "Final Exam",
+    "weight": 40.0,
+    "kept": 0,
+    "dropped": [],
+    "earned": 0.0,
+    "possible": 0.0,
+    "pct": null,
+    "contribution": null
+   },
+   {
+    "name": "Oral Exam",
+    "weight": 15.0,
+    "kept": 0,
+    "dropped": [],
+    "earned": 0.0,
+    "possible": 0.0,
+    "pct": null,
+    "contribution": null
+   }
+  ],
+  "canvas_check": null,
+  "warnings": [
+   "'Final Exam' (40%) has no items in Canvas yet; it is in the floor/ceiling but not the current grade.",
+   "'Oral Exam' (15%) has no released scores yet (not done, not marked, or marked in another tool)."
+  ]
+ }
+}

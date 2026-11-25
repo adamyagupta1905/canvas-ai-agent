@@ -1,0 +1,212 @@
+{
+ "code": "CS101",
+ "start_urls": [
+  "https://course.example.org/cs101/"
+ ],
+ "scopes": [
+  "/cs101/"
+ ],
+ "crawled_at": "2026-11-24T18:00:00Z",
+ "docs": [
+  {
+   "url": "https://course.example.org/cs101/syllabus",
+   "kind": "syllabus",
+   "title": "Syllabus",
+   "path": "pages/syllabus.md",
+   "sha256": "demo",
+   "bytes": 413,
+   "etag": null,
+   "last_modified": null,
+   "fetched_at": "2026-11-24T18:00:00Z",
+   "headings": [
+    "Grading",
+    "Labs",
+    "Project",
+    "Exams"
+   ],
+   "tables": [],
+   "links_out": []
+  },
+  {
+   "url": "https://course.example.org/cs101/schedule",
+   "kind": "schedule",
+   "title": "Schedule",
+   "path": "pages/schedule.md",
+   "sha256": "demo",
+   "bytes": 1,
+   "etag": null,
+   "last_modified": null,
+   "fetched_at": "2026-11-24T18:00:00Z",
+   "headings": [],
+   "tables": [
+    [
+     [
+      "Due",
+      "Date",
+      "What"
+     ],
+     [
+      "Lab 8",
+      "Thu 26 Nov, 23:59",
+      "Testing"
+     ],
+     [
+      "D4",
+      "Fri 27 Nov, 18:00",
+      "Final release"
+     ],
+     [
+      "Final",
+      "Tue 15 Dec, 12:00",
+      "Cumulative"
+     ]
+    ],
+    [
+     [
+      "Wk",
+      "Dates",
+      "Lectures"
+     ],
+     [
+      "1",
+      "Sep 8",
+      "Week 1"
+     ],
+     [
+      "2",
+      "Sep 15",
+      "Week 2"
+     ],
+     [
+      "3",
+      "Sep 22",
+      "Week 3"
+     ],
+     [
+      "4",
+      "Sep 29",
+      "Week 4"
+     ],
+     [
+      "5",
+      "Oct 6",
+      "Week 5"
+     ],
+     [
+      "6",
+      "Oct 13",
+      "Week 6"
+     ],
+     [
+      "7",
+      "Oct 20",
+      "Week 7"
+     ],
+     [
+      "8",
+      "Oct 27",
+      "Week 8"
+     ],
+     [
+      "9",
+      "Nov 3",
+      "Week 9"
+     ],
+     [
+      "10",
+      "Nov 10",
+      "Week 10"
+     ],
+     [
+      "11",
+      "Nov 17",
+      "Week 11"
+     ],
+     [
+      "12",
+      "Nov 24",
+      "Week 12"
+     ],
+     [
+      "13",
+      "Dec 1",
+      "Week 13"
+     ]
+    ]
+   ],
+   "links_out": []
+  },
+  {
+   "url": "https://course.example.org/cs101/lectures/01-introduction.pdf",
+   "kind": "lecture",
+   "title": "01-introduction.pdf",
+   "path": "files/01-introduction.pdf",
+   "sha256": "demo",
+   "bytes": 1,
+   "etag": null,
+   "last_modified": null,
+   "fetched_at": "2026-11-24T18:00:00Z",
+   "headings": [],
+   "tables": [],
+   "links_out": []
+  },
+  {
+   "url": "https://course.example.org/cs101/lectures/02-coupling.pdf",
+   "kind": "lecture",
+   "title": "02-coupling.pdf",
+   "path": "files/02-coupling.pdf",
+   "sha256": "demo",
+   "bytes": 1,
+   "etag": null,
+   "last_modified": null,
+   "fetched_at": "2026-11-24T18:00:00Z",
+   "headings": [],
+   "tables": [],
+   "links_out": []
+  },
+  {
+   "url": "https://course.example.org/cs101/lectures/03-testing.pdf",
+   "kind": "lecture",
+   "title": "03-testing.pdf",
+   "path": "files/03-testing.pdf",
+   "sha256": "demo",
+   "bytes": 1,
+   "etag": null,
+   "last_modified": null,
+   "fetched_at": "2026-11-24T18:00:00Z",
+   "headings": [],
+   "tables": [],
+   "links_out": []
+  },
+  {
+   "url": "https://course.example.org/cs101/lectures/04-patterns.pdf",
+   "kind": "lecture",
+   "title": "04-patterns.pdf",
+   "path": "files/04-patterns.pdf",
+   "sha256": "demo",
+   "bytes": 1,
+   "etag": null,
+   "last_modified": null,
+   "fetched_at": "2026-11-24T18:00:00Z",
+   "headings": [],
+   "tables": [],
+   "links_out": []
+  },
+  {
+   "url": "https://course.example.org/cs101/lectures/05-apis.pdf",
+   "kind": "lecture",
+   "title": "05-apis.pdf",
+   "path": "files/05-apis.pdf",
+   "sha256": "demo",
+   "bytes": 1,
+   "etag": null,
+   "last_modified": null,
+   "fetched_at": "2026-11-24T18:00:00Z",
+   "headings": [],
+   "tables": [],
+   "links_out": []
+  }
+ ],
+ "skipped": [],
+ "external_links": []
+}

@@ -12,6 +12,7 @@ Demo mode (no data/) shows a synthetic course.
 from __future__ import annotations
 
 import json
+import os
 import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -25,12 +26,19 @@ from canvas_agent.grades import grade_summary, tracker
 from canvas_agent.tools import Store
 
 ROOT = Path(__file__).parent
-DATA = ROOT / "data"
+DATA = Path(os.environ.get("COURSE_DATA_DIR") or ROOT / "data")
+DEMO = False
+if not (DATA / "canvas_snapshot.json").exists() and (ROOT / "demo_data" / "canvas_snapshot.json").exists():
+    DATA, DEMO = ROOT / "demo_data", True  # no real data: run on the committed fictional demo
+DEMO = DEMO or (DATA / "demo_meta.json").exists()  # the fictional demo, however it was selected
+os.environ["COURSE_DATA_DIR"] = str(DATA)  # so helper scripts (recheck) read the same folder
 SYL = DATA / "syllabi"
 REAL = (DATA / "canvas_snapshot.json").exists()
 
 st.set_page_config(page_title="Course dashboard", layout="wide")
-now = datetime.now(timezone.utc)
+_meta = DATA / "demo_meta.json"
+now = (datetime.fromisoformat(json.loads(_meta.read_text())["as_of"]) if _meta.exists()  # demo: frozen "today"
+       else datetime.now(timezone.utc))
 
 
 def pct(x) -> str:
@@ -54,7 +62,10 @@ wanted = st.query_params.get("course")
 page = st.sidebar.radio("View", pages, index=pages.index(wanted) if wanted in pages else 0,
                         format_func=lambda c: c if c == "All courses" else f"{c}: {courses[c]['name']}")
 st.query_params["course"] = page
-if not REAL:
+if DEMO:
+    st.sidebar.info(f"Demo mode: fictional courses as of {now:%b %d, %Y}. Your own data appears once data/ "
+                    "is populated (see the README).")
+elif not REAL:
     st.sidebar.info("Demo mode: synthetic data. Real data appears once data/canvas_snapshot.json exists.")
 
 
@@ -107,7 +118,7 @@ def overview_tab(code: str, course: dict, facts: dict | None) -> None:
     if syl:
         c1.metric("Current grade (syllabus rules)", pct(syl["current_pct"]),
                   help="Syllabus weights and rules applied to all marks we have, including ones you entered.")
-        c3.metric("Possible finish", f"{syl['floor_pct']:.1f}% – {syl['ceiling_pct']:.1f}%",
+        c3.metric("Possible finish", f"{syl['floor_pct']:.0f}–{syl['ceiling_pct']:.0f}%",
                   help="Worst case: everything remaining scores 0. Best case: everything remaining scores 100%.")
         c4.metric("Graded so far", pct(syl["weight_determined"]))
     else:
@@ -180,7 +191,7 @@ def input_section(code: str, facts: dict) -> None:
             source = c3.text_input("Where you saw it", value=r.get("likely_source") or "", key=f"src-{code}-{r['component']}")
             improve = st.text_area("Scope for improvement: what did you lose marks on? (separate with ; or new lines)",
                                    key=f"imp-{code}-{r['component']}")
-            if st.form_submit_button("Save"):
+            if st.form_submit_button("Save", disabled=DEMO):
                 if (score is None) != (out_of is None) or (out_of is not None and out_of <= 0):
                     st.error("Enter both a score and a positive 'out of', or leave both empty to save feedback only.")
                 else:

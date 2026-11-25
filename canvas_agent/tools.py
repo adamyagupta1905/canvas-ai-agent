@@ -7,6 +7,7 @@ Each tool reads the local snapshot (data/canvas_snapshot.json) and syllabus resu
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -14,7 +15,7 @@ from typing import Callable
 
 from canvas_agent.grades import grade_summary, needed_on_remaining, tracker
 
-DATA = Path(__file__).resolve().parent.parent / "data"
+DATA = Path(os.environ.get("COURSE_DATA_DIR") or Path(__file__).resolve().parent.parent / "data")
 
 
 @dataclass

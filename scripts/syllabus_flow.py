@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -22,8 +23,8 @@ from canvas_agent.retrieval import chunk_pages
 from canvas_agent.syllabus_flow import retrieve, run_syllabus_flow
 
 ROOT = Path(__file__).resolve().parent.parent
-SYL = ROOT / "data" / "syllabi"
-DATA = ROOT / "data"
+DATA = Path(os.environ.get("COURSE_DATA_DIR") or ROOT / "data")  # demo_data/ for the fictional demo
+SYL = DATA / "syllabi"
 SNAP = DATA / "canvas_snapshot.json"
 
 

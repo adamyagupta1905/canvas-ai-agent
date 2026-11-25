@@ -1,0 +1,424 @@
+{
+ "_meta": {
+  "source": "fictional demo"
+ },
+ "courses": {
+  "CS101": {
+   "canvas_id": 101,
+   "name": "Software Design",
+   "course_code": "CS101",
+   "weighted": true,
+   "omit_from_final": [],
+   "canvas_totals": null,
+   "modules": [],
+   "groups": [
+    {
+     "name": "Labs",
+     "weight": 10,
+     "rules": {
+      "drop_lowest": 1
+     },
+     "items": [
+      [
+       "Lab 1",
+       "2026-09-18T06:59:00Z",
+       10,
+       "graded",
+       10,
+       false
+      ],
+      [
+       "Lab 2",
+       "2026-09-25T06:59:00Z",
+       10,
+       "graded",
+       9,
+       false
+      ],
+      [
+       "Lab 3",
+       "2026-10-02T06:59:00Z",
+       10,
+       "graded",
+       10,
+       false
+      ],
+      [
+       "Lab 4",
+       "2026-10-09T06:59:00Z",
+       10,
+       "graded",
+       8,
+       false
+      ],
+      [
+       "Lab 5",
+       "2026-10-16T06:59:00Z",
+       10,
+       "graded",
+       10,
+       false
+      ],
+      [
+       "Lab 6",
+       "2026-10-23T06:59:00Z",
+       10,
+       "graded",
+       0,
+       false
+      ],
+      [
+       "Lab 7",
+       "2026-10-30T06:59:00Z",
+       10,
+       "graded",
+       10,
+       false
+      ],
+      [
+       "Lab 8",
+       "2026-11-27T06:59:00Z",
+       10,
+       "unsubmitted",
+       null,
+       false
+      ]
+     ]
+    },
+    {
+     "name": "Project",
+     "weight": 30,
+     "rules": {},
+     "items": [
+      [
+       "D1 Requirements",
+       "2026-09-26T01:00:00Z",
+       100,
+       "graded",
+       70,
+       false
+      ],
+      [
+       "D2 Design",
+       "2026-10-17T01:00:00Z",
+       100,
+       "graded",
+       90,
+       false
+      ],
+      [
+       "D3 Implementation",
+       "2026-11-07T02:00:00Z",
+       100,
+       "pending_review",
+       null,
+       false
+      ],
+      [
+       "D4 Final release",
+       "2026-11-28T02:00:00Z",
+       100,
+       "unsubmitted",
+       null,
+       false
+      ]
+     ]
+    },
+    {
+     "name": "Midterm",
+     "weight": 20,
+     "rules": {},
+     "items": [
+      [
+       "Midterm",
+       null,
+       100,
+       "graded",
+       78,
+       false
+      ]
+     ]
+    },
+    {
+     "name": "Final exam",
+     "weight": 40,
+     "rules": {},
+     "items": []
+    }
+   ]
+  },
+  "LAW201": {
+   "canvas_id": 201,
+   "name": "Commercial Law",
+   "course_code": "LAW201",
+   "weighted": true,
+   "omit_from_final": [],
+   "canvas_totals": null,
+   "modules": [
+    [
+     "Unit 1",
+     [
+      "P:Class 01: What is law",
+      "A:Class 01 In-Class Exercise",
+      "P:Class 02: Sources of law",
+      "A:Class 02 In-Class Exercise",
+      "P:Class 03: The courts",
+      "A:Class 03 In-Class Exercise",
+      "P:Class 04: Offer and acceptance",
+      "A:Class 04 In-Class Exercise",
+      "P:Class 05: Consideration",
+      "A:Class 05 In-Class Exercise",
+      "P:Class 06: Capacity",
+      "A:Class 06 In-Class Exercise",
+      "P:Class 07: Defects",
+      "A:Class 07 In-Class Exercise"
+     ]
+    ],
+    [
+     "Unit 2",
+     [
+      "P:Class 08: Privity",
+      "A:Class 08 In-Class Exercise",
+      "P:Class 09: Interpretation",
+      "A:Class 09 In-Class Exercise",
+      "P:Class 10: Discharge",
+      "A:Class 10 In-Class Exercise",
+      "P:Class 11: Remedies",
+      "A:Class 11 In-Class Exercise",
+      "P:Class 12: Midterm review",
+      "A:Class 12 In-Class Exercise",
+      "P:Class 13: Exclusion clauses",
+      "P:Class 14: Sale of goods",
+      "A:Class 14 In-Class Exercise"
+     ]
+    ],
+    [
+     "Unit 3",
+     [
+      "P:Class 15: Negligence",
+      "A:Class 15 In-Class Exercise",
+      "P:Class 16: Misstatement",
+      "A:Class 16 In-Class Exercise",
+      "P:Class 17: Intellectual property",
+      "A:Class 17 In-Class Exercise",
+      "P:Class 18: Agency",
+      "A:Class 18 In-Class Exercise",
+      "P:Class 19: Fiduciary duty",
+      "A:Class 19 In-Class Exercise",
+      "P:Class 20: Partnerships",
+      "A:Class 20 In-Class Exercise",
+      "P:Class 21: Corporations",
+      "A:Class 21 In-Class Exercise"
+     ]
+    ]
+   ],
+   "groups": [
+    {
+     "name": "In-Class Exercises",
+     "weight": 10,
+     "rules": {
+      "drop_lowest": 2
+     },
+     "items": [
+      [
+       "Class 01 In-Class Exercise",
+       "2026-09-25T22:00:00Z",
+       5,
+       "graded",
+       4,
+       false
+      ],
+      [
+       "Class 02 In-Class Exercise",
+       "2026-09-29T10:00:00Z",
+       5,
+       "graded",
+       0,
+       false
+      ],
+      [
+       "Class 03 In-Class Exercise",
+       "2026-10-02T22:00:00Z",
+       5,
+       "graded",
+       5,
+       false
+      ],
+      [
+       "Class 04 In-Class Exercise",
+       "2026-10-06T10:00:00Z",
+       5,
+       "graded",
+       3,
+       false
+      ],
+      [
+       "Class 05 In-Class Exercise",
+       "2026-10-09T22:00:00Z",
+       5,
+       "graded",
+       0,
+       false
+      ],
+      [
+       "Class 06 In-Class Exercise",
+       "2026-10-13T10:00:00Z",
+       5,
+       "graded",
+       4.5,
+       false
+      ],
+      [
+       "Class 07 In-Class Exercise",
+       "2026-10-16T22:00:00Z",
+       5,
+       "graded",
+       4,
+       false
+      ],
+      [
+       "Class 08 In-Class Exercise",
+       "2026-10-20T10:00:00Z",
+       5,
+       "graded",
+       5,
+       false
+      ],
+      [
+       "Class 09 In-Class Exercise",
+       "2026-10-23T22:00:00Z",
+       5,
+       "graded",
+       3.5,
+       false
+      ],
+      [
+       "Class 10 In-Class Exercise",
+       "2026-10-27T10:00:00Z",
+       5,
+       "graded",
+       0,
+       false
+      ],
+      [
+       "Class 11 In-Class Exercise",
+       "2026-10-30T22:00:00Z",
+       5,
+       "graded",
+       4,
+       false
+      ],
+      [
+       "Class 12 In-Class Exercise",
+       "2026-11-03T10:00:00Z",
+       5,
+       "graded",
+       5,
+       false
+      ],
+      [
+       "Class 14 In-Class Exercise",
+       "2026-11-10T10:00:00Z",
+       5,
+       "graded",
+       4.5,
+       false
+      ],
+      [
+       "Class 15 In-Class Exercise",
+       "2026-11-13T22:00:00Z",
+       5,
+       "graded",
+       0,
+       false
+      ],
+      [
+       "Class 16 In-Class Exercise",
+       "2026-11-17T10:00:00Z",
+       5,
+       "graded",
+       4,
+       false
+      ],
+      [
+       "Class 17 In-Class Exercise",
+       "2026-11-20T22:00:00Z",
+       5,
+       "graded",
+       3.5,
+       false
+      ],
+      [
+       "Class 18 In-Class Exercise",
+       "2026-11-24T10:00:00Z",
+       5,
+       "graded",
+       4.5,
+       false
+      ],
+      [
+       "Class 19 In-Class Exercise",
+       "2026-11-27T22:00:00Z",
+       5,
+       "unsubmitted",
+       null,
+       false
+      ],
+      [
+       "Class 20 In-Class Exercise",
+       "2026-12-01T10:00:00Z",
+       5,
+       "unsubmitted",
+       null,
+       false
+      ],
+      [
+       "Class 21 In-Class Exercise",
+       "2026-12-04T22:00:00Z",
+       5,
+       "unsubmitted",
+       null,
+       false
+      ]
+     ]
+    },
+    {
+     "name": "Midterm",
+     "weight": 35,
+     "rules": {},
+     "items": [
+      [
+       "Midterm",
+       null,
+       100,
+       "graded",
+       84,
+       false
+      ]
+     ]
+    },
+    {
+     "name": "Final Exam",
+     "weight": 40,
+     "rules": {},
+     "items": []
+    },
+    {
+     "name": "Oral Exam",
+     "weight": 15,
+     "rules": {},
+     "items": [
+      [
+       "Oral exam",
+       null,
+       15,
+       "unsubmitted",
+       null,
+       false
+      ]
+     ]
+    }
+   ]
+  }
+ }
+}

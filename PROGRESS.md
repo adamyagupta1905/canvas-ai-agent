@@ -22,6 +22,9 @@ progress, notes, a plan and every deadline, deterministically, on a dashboard an
 - [x] Agents: router + 4 agents (grades, planner, content, rules) over deterministic tools, ungrounded-number check
 - [x] `scripts.export_dashboard` -> JSON contract for the Lovable "Semester Orbit" UI (built on fictional demo data)
 - [x] Architecture diagrams (`docs/architecture-overview.svg`, `docs/architecture-agents.svg`) in README + ARCHITECTURE.md
+- [x] Portfolio release prep: README rewritten (value prop, screenshots, why, results, keyless demo, limitations),
+      `docs/EVALUATION.md` with measured aggregate results, fictional `demo_data/` + `scripts.make_demo_data`,
+      `COURSE_DATA_DIR` switch; fresh-copy install + tests + demo boot verified
 - [x] Private GitHub repo `adamyagupta1905/canvas-ai-agent`; commits use the GitHub noreply address; CI green
 
 ## In progress
@@ -54,7 +57,7 @@ progress, notes, a plan and every deadline, deterministically, on a dashboard an
 - 2026-11-23 Grade engine reproduces Canvas rules, checked against Canvas totals. (ADR-003)
 
 ## Verification status
-- Tests: 104 passing, `.venv/bin/python -m pytest -q`, 2026-11-24; CI green on `349b036`
+- Tests: 107 passing, `.venv/bin/python -m pytest -q`, 2026-11-24 (also on a fresh copy with a new venv)
 - Grade engine: matches Canvas's own totals wherever Canvas shows them; other courses hand-checked
 - Live: syllabus extraction (gemini-3.8-flash, 2 calls per course) reviewed by hand; agent smoke questions grounded
 - Evals: no scored eval yet
