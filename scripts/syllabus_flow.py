@@ -145,11 +145,12 @@ def post_process(code: str, report) -> None:
         if report.facts.components:
             from canvas_agent.grades import needed_on_remaining
 
-            from canvas_agent.user_inputs import InputStore, apply_entries, input_requests
+            from canvas_agent.user_inputs import InputStore, apply_entries, entries_into_checks, input_requests
 
             entries = InputStore(DATA / "user_inputs.json").for_course(code)
             view = syllabus_view_course(report.facts.components, checks, course)
             view, out["user_entries_applied"] = apply_entries(view, entries)  # your Gradescope etc. grades
+            out["component_checks"] = entries_into_checks(out["component_checks"], view, code)
             entered = {e.component for e in entries if e.score is not None}
             out["past_exams_without_score"] = [p for p in out.get("past_exams_without_score", [])
                                                if not any(p.startswith(c) for c in entered)]

@@ -132,6 +132,39 @@ def apply_entries(view: dict, entries: list[UserEntry]) -> tuple[dict, list[str]
     return out, notes
 
 
+ENTERED = "(entered by you"
+
+
+def entries_into_checks(checks: list[dict], view: dict, code: str) -> list[dict]:
+    """Show the student's entered marks in the per-component checks.
+
+    Component checks are built from Canvas before `apply_entries` adds the student's own marks to the syllabus view,
+    so without this an entered midterm reads "0 graded, no average" while the course grade already counts it. Adds
+    each entered item (labelled "entered by you") and takes the component's count and average from the grade engine
+    run on the same view, so the table and the grade can never disagree. Idempotent; returns new dicts."""
+    import copy
+
+    from canvas_agent.grades import grade_summary
+
+    groups = {g["name"]: g for g in view.get("groups", [])}
+    engine = {g.name: g for g in grade_summary(code, view).groups}
+    out = copy.deepcopy(checks)
+    for c in out:
+        g, eg = groups.get(c["component"]), engine.get(c["component"])
+        rows = [r for r in (g or {}).get("items", []) if ENTERED in r[0] and r[4] is not None and r[2]]
+        have = {i["name"] for i in c["items"]}
+        new = [r for r in rows if r[0] not in have]
+        if not new:
+            continue
+        dropped = set(eg.dropped) if eg else set()
+        c["items"] += [{"name": r[0], "points": r[2], "score": r[4], "pct": round(r[4] / r[2] * 100, 2),
+                        "dropped_syllabus": r[0] in dropped, "dropped_canvas": False} for r in new]
+        c["scored"] = (c.get("scored") or 0) + len(new)
+        if eg is not None and eg.pct is not None:
+            c["avg_syllabus_rules"] = round(eg.pct, 2)
+    return out
+
+
 _FILLER = set("""understanding understand code changes change different types type kinds kind its and in of the
 how to with on for about what why when using use lost marks mark more better get got some various""".split())
 

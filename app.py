@@ -24,6 +24,7 @@ import streamlit as st
 from canvas_agent import course_view as cv
 from canvas_agent.grades import grade_summary, tracker
 from canvas_agent.tools import Store
+from canvas_agent.user_inputs import entries_into_checks
 
 ROOT = Path(__file__).parent
 DATA = Path(os.environ.get("COURSE_DATA_DIR") or ROOT / "data")
@@ -250,6 +251,8 @@ def component_chart(c: dict) -> None:
 
 def grades_tab(code: str, course: dict, facts: dict | None) -> None:
     checks = (facts or {}).get("component_checks")
+    if checks and facts.get("syllabus_view_course"):  # idempotent: also fixes facts files written before the fix
+        checks = entries_into_checks(checks, facts["syllabus_view_course"], code)
     if checks:
         st.dataframe(pd.DataFrame([{
             "Component": c["component"], "Weight %": c["syllabus_weight"],

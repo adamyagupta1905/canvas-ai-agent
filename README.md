@@ -33,8 +33,8 @@ reported in aggregate).
 | Grade engine vs Canvas's own totals (where Canvas shows them) | **2 / 2** courses match on both current and final views |
 | Syllabus weights grounded and summing to 100 (`gemini-3.8-flash`, 5 syllabi) | **5 / 5** |
 | Extracted weights vs Canvas group weights (3 weighted courses) | **16 / 16** components (13 exact, 2 split, 2 merged); 13 / 16 on the first pass |
-| Failures found on real data and fixed with regression tests | 10 (see EVALUATION.md) |
-| Offline tests | 117, run in CI on every push |
+| Failures found on real data and fixed with regression tests | 11 (see EVALUATION.md) |
+| Offline tests | 118, run in CI on every push |
 
 Caveat: no held-out syllabi yet, so 16 / 16 is optimistic for unseen courses.
 

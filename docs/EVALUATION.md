@@ -47,6 +47,7 @@ Validation on real data exposed these; each fix has a regression test.
 | Equal-weight deliverables averaged by points | equal weighting applied as the syllabus states |
 | Same deadline listed twice from two sources | merged by local date + matching key ("D4" = "DELIV4") |
 | Time zones: course-page times treated as UTC | course-local time everywhere |
+| An entered exam mark counted in the grade but showed as ungraded per component | entries merged into the component checks from the grade engine |
 
 ## 4. Agents (live smoke tests)
 

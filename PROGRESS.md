@@ -23,6 +23,8 @@ progress, notes, a plan and every deadline, deterministically, on a dashboard an
 - [x] Semester Orbit web UI built in the repo (`web/`, `scripts.serve_web`, ADR-013), replacing the Lovable prototype:
       orbit + table home, 14-day timeline, needs-your-input, six tabs per course; checked on demo and real data,
       desktop and phone width
+- [x] Entered marks show per component on both dashboards (`user_inputs.entries_into_checks`, applied in the
+      syllabus flow and, idempotently, when reading older facts files)
 - [x] Architecture diagrams (`docs/architecture-overview.svg`, `docs/architecture-agents.svg`) in README + ARCHITECTURE.md
 - [x] Portfolio release prep: README rewritten (value prop, screenshots, why, results, keyless demo, limitations),
       `docs/EVALUATION.md` with measured aggregate results, fictional `demo_data/` + `scripts.make_demo_data`,
@@ -40,11 +42,8 @@ progress, notes, a plan and every deadline, deterministically, on a dashboard an
    hand-label the points-only ones; report misses and rejects next to successes.
 3. **Refresh path**: run `scripts.ingest_canvas` with a real read-only token; re-run the PrairieLearn collector and
    `scripts.crawl_site <CODE>`; then `scripts.syllabus_flow <CODE> --recheck` and `scripts.export_dashboard`.
-4. **Streamlit Grades tab misses entered marks per component**: `syllabus_flow.post_process` builds `component_checks`
-   before `apply_entries`, so an entered midterm shows as ungraded there (the course grade is right). The Orbit
-   exporter patches this (`_with_entries`); fix it at the source and drop the patch.
-5. **Quiz generation + eval** from practice exams that ship with answer keys (cited questions, Python marking).
-6. Optional cited LLM summaries on top of the extracted note outlines.
+4. **Quiz generation + eval** from practice exams that ship with answer keys (cited questions, Python marking).
+5. Optional cited LLM summaries on top of the extracted note outlines.
 
 ## Blockers / open questions
 - `CanvasAPI` has only been tested against a fake server (needs the student's token in `.env`).
@@ -66,7 +65,7 @@ progress, notes, a plan and every deadline, deterministically, on a dashboard an
 - 2026-11-23 Grade engine reproduces Canvas rules, checked against Canvas totals. (ADR-003)
 
 ## Verification status
-- Tests: 117 passing, `.venv/bin/python -m pytest -q`, 2026-11-24 (also on a fresh copy with a new venv); CI green on `77013eb`
+- Tests: 118 passing, `.venv/bin/python -m pytest -q`, 2026-11-24 (also on a fresh copy with a new venv); CI green on `77013eb`
 - Grade engine: matches Canvas's own totals wherever Canvas shows them; other courses hand-checked
 - Live: syllabus extraction (gemini-3.8-flash, 2 calls per course) reviewed by hand; agent smoke questions grounded
 - Evals: no scored eval yet

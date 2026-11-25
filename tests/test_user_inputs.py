@@ -93,3 +93,24 @@ def test_focus_query_keeps_distinctive_words():
     assert focus_query("recursion and its different types") == "recursion"
     assert focus_query("understanding code changes in design patterns") == "design patterns"
     assert focus_query("and the") == "and the"  # nothing distinctive: fall back to the original text
+
+
+def test_entered_marks_reach_the_component_checks():
+    """Regression: checks were built before entries were applied, so an entered midterm read "0 graded, no average"
+    on the Grades tab while the course grade already counted it."""
+    from canvas_agent.user_inputs import entries_into_checks
+
+    checks = [{"component": "Midterm", "scored": 0, "avg_syllabus_rules": None, "items": []},
+              {"component": "Labs", "scored": 1, "avg_syllabus_rules": 90.0,
+               "items": [{"name": "Lab 1", "points": 10, "score": 9, "pct": 90.0}]}]
+    view = {"name": "X", "weighted": True, "groups": [
+        {"name": "Midterm", "weight": 40, "rules": {}, "items": [
+            ["Midterm (entered by you, from Gradescope)", None, 40.0, "graded", 31.0, False]]},
+        {"name": "Labs", "weight": 60, "rules": {}, "items": [["Lab 1", None, 10.0, "graded", 9.0, False]]}]}
+    out = entries_into_checks(checks, view, "X")
+    mid = out[0]
+    assert mid["scored"] == 1 and mid["avg_syllabus_rules"] == 77.5
+    assert mid["items"][0]["name"].endswith("(entered by you, from Gradescope)") and mid["items"][0]["pct"] == 77.5
+    assert out[1] == checks[1]  # components without entries are untouched
+    assert checks[0]["items"] == []  # input not mutated
+    assert entries_into_checks(out, view, "X") == out  # idempotent: safe to apply again when reading old files

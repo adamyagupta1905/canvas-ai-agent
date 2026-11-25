@@ -98,15 +98,8 @@ def test_note_scores_are_item_pct_pairs():
     assert scores and all(set(x) == {"item", "pct"} for x in scores)
 
 
-def test_entered_marks_reach_the_component_table():
-    """Regression: component checks predate the student's entries, so an entered midterm showed as ungraded."""
-    from canvas_agent.grades import GroupResult
 
-    comp = {"component": "Midterm", "graded": 0, "average_pct": None,
-            "items": [{"name": "Midterm (not yet in Canvas)", "pct": None, "status": "not graded yet"}]}
-    group = {"name": "Midterm", "items": [["Midterm (entered by you, from Gradescope)", None, 40.0, "graded", 31.0, False]]}
-    engine = GroupResult(name="Midterm", weight=25, kept=1, dropped=[], earned=31, possible=40, pct=77.5, contribution=None)
-    out = ex._with_entries(comp, group, engine)
-    assert out["graded"] == 1 and out["average_pct"] == 77.5
-    assert out["items"][-1] == {"name": "Midterm (entered by you, from Gradescope)", "pct": 77.5, "status": "entered by you"}
-    assert ex._with_entries({"items": [], "graded": 2}, None, None) == {"items": [], "graded": 2}
+def test_exported_component_labels_entered_marks():
+    c = ex._component({"component": "Midterm", "items": [
+        {"name": "Midterm (entered by you, from Gradescope)", "score": 31, "pct": 77.5, "dropped_syllabus": False}]})
+    assert c["items"][0]["status"] == "entered by you"
