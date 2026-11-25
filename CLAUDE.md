@@ -76,3 +76,7 @@ notes, an exam study plan, quizzes with marking, and a live progress dashboard (
 - Type hints and Pydantic models at module boundaries; external services behind a Protocol so fakes slot in.
 - New behaviour comes with a test. Bugs found by evals get a regression test.
 - Never edit: `data/`, `evaluation/results/` (generated).
+- `docs/architecture-*.svg` are hand-written SVG (no generator): when agents, tools or data flow change, edit them
+  together with the Mermaid blocks in `docs/ARCHITECTURE.md`.
+- After changing grade, view or dashboard code, run `scripts.make_demo_data`, then `pytest`; if the demo screens
+  changed, retake `docs/screenshot-*.jpg` from the `demo` launch config (demo data only).
