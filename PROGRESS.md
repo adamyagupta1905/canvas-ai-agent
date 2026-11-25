@@ -1,81 +1,61 @@
 # Progress
 
-_Last updated: 2026-11-24 (views + architecture)_
+_Last updated: 2026-11-24_
 
-> Personal course results, grades and confirmations are kept out of git. The detailed, student-specific
-> version of this file lives in `data/PROGRESS_PRIVATE.md` (gitignored). This file describes the system only.
+> This file describes the system only. Student-specific state (real grades, entries, confirmations, open
+> questions about specific courses) lives in `data/PROGRESS_PRIVATE.md`, which is gitignored. Read both.
 
 ## Current goal
-Ship v1: from a student's courses (Canvas + PrairieLearn + course websites + what the student tells us), produce
-precise grades, a unified tracker, notes, quizzes and exam plans. Use-case map: `docs/USE_CASES.md`.
+v1: for any course a student connects (Canvas + PrairieLearn + course website + what they enter), show grades,
+progress, notes, a plan and every deadline, deterministically, on a dashboard and through agents.
 
-## Done
-- [x] Scaffold: package, LLM adapter, models, fixture source, syllabus extraction + grounding check, CI
-- [x] Read-only Canvas survey via a signed-in browser session -> `data/canvas_snapshot.json` (gitignored; drop rules,
-      omitted items, Canvas totals; module titles containing passwords are never stored)
-- [x] `grades.py`: Canvas-exact grade engine (weights, points, drop-lowest best-%, omitted, unreleased, extra credit),
-      Canvas "final" view, floor/ceiling, needed-for-target by bisection, unified tracker, topic mastery, sync-gap warnings.
-      Matches Canvas's own totals to 2 dp wherever Canvas shows them.
-- [x] `GeminiClient` + `make_client()` (`LLM_PROVIDER`, default gemini); Anthropic behind the same Protocol
-- [x] Standard syllabus flow (`docs/SYLLABUS_FLOW.md`): text layer + Tesseract OCR fallback, page-cited chunks,
-      hybrid BM25 retrieval (percent-dense chunks + next-chunk expansion), grounded extraction, Python checks,
-      Canvas reconciliation (match / split / merged / only-in-one); free dry run and free `--recheck` replay
-- [x] Rules pass + per-component validation (`component_check.py`): session counts from Canvas Modules, numbering gaps
-      explained, drops/aggregation compared, attendance thresholds, exam-date hints, past exams without a score,
-      syllabus-rules grade + needed
-- [x] Automatic ingestion path: `CanvasAPI` (read-only token) + `ingest.py` find/download the syllabus
-      (Syllabus-page PDF -> Modules PDF -> Syllabus HTML -> ask for a file); `scripts/ingest_canvas.py`
-- [x] PrairieLearn connector: in-browser collector (GET only, no classmates' data) + normaliser (pending manual grading,
-      hidden scores, redo/practice, credit deadlines in course time zone); merge fills Canvas gaps only
-- [x] Course-website pipeline: polite same-site crawler (scopes, robots, caps, ETags), tables kept as rows, slide PDFs
-      with OCR, page-cited index + search; syllabus flow can read the site; content agent cites URL + page
-- [x] Student input for unreachable data (Gradescope, iClicker, paper exams): input requests, dashboard form +
-      `scripts.enter_grade`, entries labelled "(entered by you)" in the grade, improvement areas -> study focus
-- [x] Agents: router + grades / attendance / deadlines / syllabus / content agents over deterministic tools,
-      ungrounded-number check; `scripts/ask.py`
-- [x] Five deterministic views per course (`course_view.py`): progress, notes (extracted outlines), merged deadlines,
-      rule-based plan, all-courses overview. Dashboard: All courses page + tabs Overview · Grades · Notes · Plan ·
-      Deadlines · Sources. Agents simplified to 4 (grades, planner, content, rules) with the views as tools
-- [x] `docs/ARCHITECTURE.md`: data-flow and agents/tools diagrams
-- [x] Canvas redirect tools ("Course Website", "Course Book") resolved to real site URLs (`ingest.course_site_urls`);
-      a second course site crawled (MyST site + Quarto book; hashed `LecNN-<hash>.pdf` slides recognised); schedule
-      fallback ignores textbook data tables; deadline tables recognised by header meaning, not fixed names
-- [x] Grade rules: never-drop items ("excluding Homework 5"), active-voice drop wording, course abbreviations (HW,
-      MT) in matching, pass-requirement checks (combined weighted thresholds, needed on remaining), attendance
-      wording excluded from pass checks; index reuses extracted text for unchanged files (no repeated OCR)
-- [x] UI: a Lovable front end ("Semester Orbit") built from a brief with fictional demo data and the dashboard JSON
-      contract; `scripts.export_dashboard` writes the real data in that contract locally (data/dashboard.json, never uploaded)
-- [x] 104 offline tests (fake Canvas server asserts GET-only; fake website; real Tesseract OCR test; CI installs Tesseract)
+## Done (system)
+- [x] Connectors: read-only Canvas client + ingest (syllabus discovery, redirect-tool site URLs), PrairieLearn in-browser
+      collector + normaliser, polite course-website crawler with page-cited index (OCR once, cached), student input
+- [x] Syllabus flow: text/OCR -> chunks -> hybrid BM25 -> two-pass extraction (components, per-component rules) ->
+      Python validation; free `--recheck` replay of saved model output
+- [x] Grade engine (Canvas-exact: weights, drops incl. never-drop items, omitted, unreleased, extra credit) + syllabus
+      view, floor/ceiling, needed-for-target, pass-requirement checks, attendance check, exam-date hints
+- [x] Five deterministic views (`course_view.py`): progress, notes (extracted outlines), merged deadlines, rule-based
+      plan, all-courses overview
+- [x] Streamlit dashboard: All courses + per-course tabs (Overview, Grades, Notes, Plan, Deadlines, Sources)
+- [x] Agents: router + 4 agents (grades, planner, content, rules) over deterministic tools, ungrounded-number check
+- [x] `scripts.export_dashboard` -> JSON contract for the Lovable "Semester Orbit" UI (built on fictional demo data)
+- [x] Architecture diagrams (`docs/architecture-overview.svg`, `docs/architecture-agents.svg`) in README + ARCHITECTURE.md
+- [x] Private GitHub repo `adamyagupta1905/canvas-ai-agent`; commits use the GitHub noreply address; CI green
 
 ## In progress
-- [ ] Nothing mid-edit.
+- [ ] Nothing mid-edit. Working tree clean at `349b036` before this handoff edit.
 
 ## Next up
-1. Ask the student for exam dates the syllabus leaves open ("exam period") so the plan can schedule review.
-2. **Syllabus extraction eval**: where Canvas has group weights they are a free answer key; hand-label the rest.
-3. Repeatable pulls: Canvas token for `scripts.ingest_canvas`; re-run the PrairieLearn collector to refresh.
-4. **Quiz-generation eval** from practice exams that come with answer keys.
-5. Notes + quiz generation (Gemini) once a small paid run is approved.
-6. Exam study plans driven by weak topics, study focus and the share of grade at stake.
+1. **Exam dates the syllabus leaves open** ("exam period"): add them to `input_requests` so the student can enter the
+   date and `course_view.plan` schedules review (today the plan skips exams without a date).
+2. **Syllabus extraction eval** (`/llm-eval`): Canvas group weights are a free answer key for weighted courses;
+   hand-label the points-only ones; report misses and rejects next to successes.
+3. **Refresh path**: run `scripts.ingest_canvas` with a real read-only token; re-run the PrairieLearn collector and
+   `scripts.crawl_site <CODE>`; then `scripts.syllabus_flow <CODE> --recheck` and `scripts.export_dashboard`.
+4. **Lovable UI**: with credits, ask Lovable for a visual pass of the course pages; then sync to GitHub, run locally and
+   swap in `data/dashboard.json` (never upload real data to Lovable).
+5. **Quiz generation + eval** from practice exams that ship with answer keys (cited questions, Python marking).
+6. Optional cited LLM summaries on top of the extracted note outlines.
 
 ## Blockers / open questions
-- Lovable UI: build finished but the account ran out of credits before a visual pass; course pages and possible
-  type errors are unverified. To use real data, sync the Lovable project to GitHub and run it locally with
-  data/dashboard.json swapped in (do not upload real data to Lovable).
-- `CanvasAPI` not yet run against real Canvas (needs the student's token in `.env`); tested only against a fake server.
-- `gemini-2.5-flash` is retired for new users; default is `gemini-3.8-flash` (verified by a live call).
+- Lovable account is out of credits; its course pages (and possible type errors it mentioned) are unverified.
+- `CanvasAPI` has only been tested against a fake server (needs the student's token in `.env`).
+- One course site links a slide deck at a broken path (HTTP 503); a few image-only slides still leak OCR noise.
 
 ## Decisions (newest first)
+- 2026-11-24 Outside UI builders get fictional data + the JSON contract only; real data stays local. (CLAUDE.md)
+- 2026-11-24 Five deterministic views per course; four agents. (ADR-012)
 - 2026-11-24 Ask the student for grades no connector can reach; label them in every calculation. (ADR-011)
 - 2026-11-23 Course websites as a source: crawl once, index once, cite always. (ADR-010)
 - 2026-11-23 PrairieLearn via in-browser collector, merged into Canvas gaps only. (ADR-009)
-- 2026-11-23 Specialist agents on one key, tools for everything deterministic. (ADR-008)
-- 2026-11-23 Two-pass extraction (components, then per-component rules) + Python validation. (ADR-007)
-- 2026-11-23 Grade engine reproduces Canvas rules and is checked against Canvas totals. (ADR-003)
-- 2026-11-23 Real course data only in gitignored `data/`; tests stay synthetic.
+- 2026-11-23 Two-pass extraction + Python validation of every rule. (ADR-007)
+- 2026-11-23 Grade engine reproduces Canvas rules, checked against Canvas totals. (ADR-003)
 
 ## Verification status
-- Tests: 104 passing, `.venv/bin/python -m pytest -q`, 2026-11-24
-- Grade engine: matches Canvas's own totals on every course where Canvas shows them; others hand-checked
-- Evals: live extraction runs reviewed by hand against Canvas and the source documents; no scored eval yet
-- Not verified: ClaudeClient against the real API; snapshot freshness (pulls are manual)
+- Tests: 104 passing, `.venv/bin/python -m pytest -q`, 2026-11-24; CI green on `349b036`
+- Grade engine: matches Canvas's own totals wherever Canvas shows them; other courses hand-checked
+- Live: syllabus extraction (gemini-3.8-flash, 2 calls per course) reviewed by hand; agent smoke questions grounded
+- Evals: no scored eval yet
+- Not verified: ClaudeClient against the real API; Lovable course pages; snapshot freshness (pulls are manual)

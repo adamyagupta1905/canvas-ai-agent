@@ -44,7 +44,8 @@ notes, an exam study plan, quizzes with marking, and a live progress dashboard (
 - `canvas_agent/syllabus.py`: LLM exam extraction + grounding check (quote must appear in syllabus)
 - `scripts/course_report.py`: per-course report over `data/canvas_snapshot.json`
 - `app.py`: Streamlit dashboard: All courses page + per-course tabs Overview · Grades · Notes · Plan · Deadlines · Sources (`?course=CODE`)
-- `docs/ARCHITECTURE.md`: data-flow and agent/tool diagrams (Mermaid) + use-case table
+- `docs/ARCHITECTURE.md`: data-flow and agent/tool diagrams (Mermaid) + use-case table; `docs/architecture-*.svg` image versions
+- `data/PROGRESS_PRIVATE.md` (gitignored): student-specific state; read it with PROGRESS.md at session start
 - `docs/USE_CASES.md`: use cases mapped to the five sample course layouts
 - `tests/`: offline tests with `FakeLLM` and synthetic fixtures in `tests/fixtures/courses/`
 - `evaluation/`: `answer_key.json`, `run_eval.py`, `results/` (generated)
