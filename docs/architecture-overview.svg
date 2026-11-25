@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" font-family="Helvetica, Arial, sans-serif">
+  <title>Course command center: system architecture</title>
+  <desc>Read-only sources feed connectors, which write local data. A deterministic Python core builds grades, checks and views. The LLM is used only to read syllabus rules (verified by Python) and to phrase agent answers. Outputs are the Streamlit dashboard, the agents, and a JSON export for the Lovable UI.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1L9 5L1 9" fill="none" stroke="#5F5E5A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .col { font-size: 15px; font-weight: 700; fill: #2C2C2A; }
+      .sub { font-size: 12px; fill: #5F5E5A; }
+      .t { font-size: 13px; font-weight: 700; }
+      .s { font-size: 11px; }
+      .arr { stroke: #888780; stroke-width: 1.3; fill: none; }
+    </style>
+  </defs>
+  <rect width="1200" height="820" fill="#FFFFFF"/>
+  <text x="600" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#2C2C2A">Course command center: system architecture</text>
+  <text x="600" y="56" text-anchor="middle" class="sub">Deterministic by default. The LLM only reads syllabus rules (quotes verified by Python) and phrases agent answers.</text>
+
+  <!-- column headers -->
+  <text x="100" y="92" text-anchor="middle" class="col">Sources</text>
+  <text x="100" y="108" text-anchor="middle" class="sub">read-only</text>
+  <text x="330" y="92" text-anchor="middle" class="col">Connectors</text>
+  <text x="330" y="108" text-anchor="middle" class="sub">Python</text>
+  <text x="560" y="92" text-anchor="middle" class="col">Local data</text>
+  <text x="560" y="108" text-anchor="middle" class="sub">data/, never committed</text>
+  <text x="800" y="92" text-anchor="middle" class="col">Deterministic core</text>
+  <text x="800" y="108" text-anchor="middle" class="sub">Python, no LLM unless marked</text>
+  <text x="1080" y="92" text-anchor="middle" class="col">Outputs</text>
+  <text x="1080" y="108" text-anchor="middle" class="sub">what the student sees</text>
+
+  <!-- Sources -->
+  <g fill="#F1EFE8" stroke="#888780" stroke-width="1">
+    <rect x="20" y="130" width="160" height="58" rx="8"/><rect x="20" y="220" width="160" height="58" rx="8"/>
+    <rect x="20" y="310" width="160" height="58" rx="8"/><rect x="20" y="400" width="160" height="58" rx="8"/>
+    <rect x="20" y="490" width="160" height="58" rx="8"/>
+  </g>
+  <g fill="#2C2C2A">
+    <text x="100" y="155" text-anchor="middle" class="t">Canvas</text><text x="100" y="173" text-anchor="middle" class="s" fill="#5F5E5A">grades, weights, modules</text>
+    <text x="100" y="245" text-anchor="middle" class="t">PrairieLearn</text><text x="100" y="263" text-anchor="middle" class="s" fill="#5F5E5A">scores, credit deadlines</text>
+    <text x="100" y="335" text-anchor="middle" class="t">Course website</text><text x="100" y="353" text-anchor="middle" class="s" fill="#5F5E5A">schedule, slides, book</text>
+    <text x="100" y="425" text-anchor="middle" class="t">Syllabus</text><text x="100" y="443" text-anchor="middle" class="s" fill="#5F5E5A">PDF or web page</text>
+    <text x="100" y="515" text-anchor="middle" class="t">You</text><text x="100" y="533" text-anchor="middle" class="s" fill="#5F5E5A">Gradescope marks, feedback</text>
+  </g>
+
+  <!-- Connectors -->
+  <g fill="#E1F5EE" stroke="#0F6E56" stroke-width="1">
+    <rect x="240" y="130" width="180" height="58" rx="8"/><rect x="240" y="220" width="180" height="58" rx="8"/>
+    <rect x="240" y="310" width="180" height="58" rx="8"/><rect x="240" y="400" width="180" height="58" rx="8"/>
+    <rect x="240" y="490" width="180" height="58" rx="8"/>
+  </g>
+  <g fill="#085041">
+    <text x="330" y="155" text-anchor="middle" class="t">canvas_api + ingest</text><text x="330" y="173" text-anchor="middle" class="s" fill="#0F6E56">GET-only token client</text>
+    <text x="330" y="245" text-anchor="middle" class="t">prairielearn</text><text x="330" y="263" text-anchor="middle" class="s" fill="#0F6E56">in-browser collector</text>
+    <text x="330" y="335" text-anchor="middle" class="t">website crawler</text><text x="330" y="353" text-anchor="middle" class="s" fill="#0F6E56">scoped, robots, ETags</text>
+    <text x="330" y="425" text-anchor="middle" class="t">documents</text><text x="330" y="443" text-anchor="middle" class="s" fill="#0F6E56">text layer + Tesseract OCR</text>
+    <text x="330" y="515" text-anchor="middle" class="t">user_inputs</text><text x="330" y="533" text-anchor="middle" class="s" fill="#0F6E56">form or enter_grade CLI</text>
+  </g>
+
+  <!-- Local data -->
+  <g fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1" stroke-dasharray="4 3">
+    <rect x="480" y="130" width="160" height="58" rx="8"/><rect x="480" y="220" width="160" height="58" rx="8"/>
+    <rect x="480" y="310" width="160" height="58" rx="8"/><rect x="480" y="400" width="160" height="58" rx="8"/>
+    <rect x="480" y="490" width="160" height="58" rx="8"/>
+  </g>
+  <g fill="#2C2C2A">
+    <text x="560" y="155" text-anchor="middle" class="t">canvas_snapshot</text><text x="560" y="173" text-anchor="middle" class="s" fill="#5F5E5A">.json</text>
+    <text x="560" y="245" text-anchor="middle" class="t">prairielearn_snapshot</text><text x="560" y="263" text-anchor="middle" class="s" fill="#5F5E5A">.json</text>
+    <text x="560" y="335" text-anchor="middle" class="t">sites/CODE/</text><text x="560" y="353" text-anchor="middle" class="s" fill="#5F5E5A">pages, PDFs, cited index</text>
+    <text x="560" y="425" text-anchor="middle" class="t">syllabi/CODE.facts</text><text x="560" y="443" text-anchor="middle" class="s" fill="#5F5E5A">components, rules, checks</text>
+    <text x="560" y="515" text-anchor="middle" class="t">user_inputs.json</text><text x="560" y="533" text-anchor="middle" class="s" fill="#5F5E5A">+ confirmations.json</text>
+  </g>
+
+  <!-- arrows sources -> connectors -> data -->
+  <g class="arr" marker-end="url(#a)">
+    <line x1="180" y1="159" x2="236" y2="159"/><line x1="180" y1="249" x2="236" y2="249"/>
+    <line x1="180" y1="339" x2="236" y2="339"/><line x1="180" y1="429" x2="236" y2="429"/>
+    <line x1="180" y1="519" x2="236" y2="519"/>
+    <line x1="420" y1="159" x2="476" y2="159"/><line x1="420" y1="249" x2="476" y2="249"/>
+    <line x1="420" y1="339" x2="476" y2="339"/><line x1="420" y1="519" x2="476" y2="519"/>
+  </g>
+
+  <!-- LLM: syllabus rules (between documents and facts) -->
+  <rect x="440" y="590" width="240" height="74" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="1.2"/>
+  <text x="560" y="614" text-anchor="middle" class="t" fill="#712B13">LLM step 1: syllabus rules</text>
+  <text x="560" y="632" text-anchor="middle" class="s" fill="#993C1D">retrieve chunks (BM25) -> extract with quotes</text>
+  <text x="560" y="650" text-anchor="middle" class="s" fill="#993C1D">Python: quote in chunk, number in quote, sum 100</text>
+  <path d="M420 444 L450 444 L450 586" class="arr" marker-end="url(#a)"/>
+  <path d="M466 590 L466 429 L476 429" class="arr" marker-end="url(#a)"/>
+
+  <!-- Core -->
+  <g fill="#EEEDFE" stroke="#534AB7" stroke-width="1">
+    <rect x="700" y="130" width="200" height="58" rx="8"/><rect x="700" y="220" width="200" height="58" rx="8"/>
+    <rect x="700" y="310" width="200" height="58" rx="8"/><rect x="700" y="400" width="200" height="58" rx="8"/>
+    <rect x="700" y="490" width="200" height="58" rx="8"/>
+  </g>
+  <g fill="#3C3489">
+    <text x="800" y="155" text-anchor="middle" class="t">Store (tools.py)</text><text x="800" y="173" text-anchor="middle" class="s" fill="#534AB7">Canvas + PL merged, never overwrites</text>
+    <text x="800" y="245" text-anchor="middle" class="t">grades.py</text><text x="800" y="263" text-anchor="middle" class="s" fill="#534AB7">Canvas-exact engine, drops, targets</text>
+    <text x="800" y="335" text-anchor="middle" class="t">reconcile + component_check</text><text x="800" y="353" text-anchor="middle" class="s" fill="#534AB7">rules vs Canvas, pass, attendance</text>
+    <text x="800" y="425" text-anchor="middle" class="t">course_view.py</text><text x="800" y="443" text-anchor="middle" class="s" fill="#534AB7">progress, notes, deadlines, plan</text>
+    <text x="800" y="515" text-anchor="middle" class="t">website.search</text><text x="800" y="533" text-anchor="middle" class="s" fill="#534AB7">page-cited BM25 over sites</text>
+  </g>
+  <!-- data -> core: one bus feeding every core module -->
+  <g stroke="#888780" stroke-width="1.3" fill="none">
+    <line x1="640" y1="159" x2="670" y2="159"/><line x1="640" y1="249" x2="670" y2="249"/>
+    <line x1="640" y1="339" x2="670" y2="339"/><line x1="640" y1="429" x2="670" y2="429"/>
+    <line x1="640" y1="519" x2="670" y2="519"/>
+    <line x1="670" y1="159" x2="670" y2="519"/>
+  </g>
+  <g class="arr" marker-end="url(#a)">
+    <line x1="670" y1="159" x2="696" y2="159"/><line x1="670" y1="249" x2="696" y2="249"/>
+    <line x1="670" y1="339" x2="696" y2="339"/><line x1="670" y1="429" x2="696" y2="429"/>
+    <line x1="670" y1="519" x2="696" y2="519"/>
+  </g>
+
+  <!-- Outputs -->
+  <g fill="#E6F1FB" stroke="#185FA5" stroke-width="1">
+    <rect x="960" y="150" width="220" height="80" rx="8"/>
+    <rect x="960" y="300" width="220" height="80" rx="8"/>
+    <rect x="960" y="450" width="220" height="80" rx="8"/>
+  </g>
+  <g fill="#0C447C">
+    <text x="1070" y="178" text-anchor="middle" class="t">Streamlit dashboard</text>
+    <text x="1070" y="196" text-anchor="middle" class="s" fill="#185FA5">All courses + tabs: Overview, Grades,</text>
+    <text x="1070" y="212" text-anchor="middle" class="s" fill="#185FA5">Notes, Plan, Deadlines, Sources (no LLM)</text>
+    <text x="1070" y="328" text-anchor="middle" class="t">Agents (router + 4)</text>
+    <text x="1070" y="346" text-anchor="middle" class="s" fill="#185FA5">grades, planner, content, rules</text>
+    <text x="1070" y="362" text-anchor="middle" class="s" fill="#185FA5">call the same views as tools</text>
+    <text x="1070" y="478" text-anchor="middle" class="t">export_dashboard</text>
+    <text x="1070" y="496" text-anchor="middle" class="s" fill="#185FA5">JSON contract -> Lovable UI</text>
+    <text x="1070" y="512" text-anchor="middle" class="s" fill="#185FA5">(demo data only leaves the machine)</text>
+  </g>
+  <g class="arr" marker-end="url(#a)">
+    <path d="M900 429 L930 429 L930 190 L956 190"/>
+    <path d="M930 340 L956 340"/>
+    <path d="M930 429 L930 490 L956 490"/>
+
+  </g>
+
+  <!-- LLM step 2 -->
+  <rect x="960" y="590" width="220" height="74" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="1.2"/>
+  <text x="1070" y="614" text-anchor="middle" class="t" fill="#712B13">LLM step 2: phrase answers</text>
+  <text x="1070" y="632" text-anchor="middle" class="s" fill="#993C1D">Gemini (default) or Claude, one adapter</text>
+  <text x="1070" y="650" text-anchor="middle" class="s" fill="#993C1D">Python flags any number not in a tool result</text>
+  <path d="M1180 340 L1192 340 L1192 627 L1184 627" class="arr" marker-end="url(#a)"/>
+  <path d="M900 519 L930 519 L930 490" class="arr"/>
+
+  <!-- legend -->
+  <g font-size="12" fill="#2C2C2A">
+    <rect x="20" y="720" width="18" height="14" rx="3" fill="#F1EFE8" stroke="#888780"/><text x="46" y="732">source</text>
+    <rect x="120" y="720" width="18" height="14" rx="3" fill="#E1F5EE" stroke="#0F6E56"/><text x="146" y="732">connector</text>
+    <rect x="240" y="720" width="18" height="14" rx="3" fill="#F1EFE8" stroke="#5F5E5A" stroke-dasharray="4 3"/><text x="266" y="732">local file (gitignored)</text>
+    <rect x="420" y="720" width="18" height="14" rx="3" fill="#EEEDFE" stroke="#534AB7"/><text x="446" y="732">deterministic Python</text>
+    <rect x="600" y="720" width="18" height="14" rx="3" fill="#FAECE7" stroke="#993C1D"/><text x="626" y="732">LLM step (verified by Python)</text>
+    <rect x="830" y="720" width="18" height="14" rx="3" fill="#E6F1FB" stroke="#185FA5"/><text x="856" y="732">output</text>
+  </g>
+  <text x="20" y="770" class="sub">Invariants: Python does all maths; missing values stay missing; every extracted fact carries a quote; Canvas is read-only;</text>
+  <text x="20" y="788" class="sub">grades you enter are labelled "entered by you"; real course data stays in data/ and is never committed or uploaded.</text>
+</svg>

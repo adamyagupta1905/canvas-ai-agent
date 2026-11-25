@@ -4,6 +4,14 @@ Design rule: **deterministic by default**. Python fetches, parses, counts, sched
 The LLM is used in exactly two places: reading syllabus rules (with quotes Python verifies) and phrasing agent
 answers from tool results (every number checked against those results). The dashboard uses no LLM at all.
 
+## At a glance
+
+![System architecture: sources, connectors, local data, deterministic core, outputs](architecture-overview.svg)
+
+![Agents and the tools they can call](architecture-agents.svg)
+
+The Mermaid versions below carry the same structure in text form.
+
 ## 1. Data flow: sources to views
 
 ```mermaid
