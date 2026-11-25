@@ -25,6 +25,8 @@ progress, notes, a plan and every deadline, deterministically, on a dashboard an
       desktop and phone width
 - [x] Entered marks show per component on both dashboards (`user_inputs.entries_into_checks`, applied in the
       syllabus flow and, idempotently, when reading older facts files)
+- [x] Display polish: one set of plain status labels for every UI (`course_view.status_label`); Streamlit lists overdue
+      items apart from "Next 14 days" and shows a dash for missing numbers
 - [x] Architecture diagrams (`docs/architecture-overview.svg`, `docs/architecture-agents.svg`) in README + ARCHITECTURE.md
 - [x] Portfolio release prep: README rewritten (value prop, screenshots, why, results, keyless demo, limitations),
       `docs/EVALUATION.md` with measured aggregate results, fictional `demo_data/` + `scripts.make_demo_data`,
@@ -33,17 +35,19 @@ progress, notes, a plan and every deadline, deterministically, on a dashboard an
       keys, data or personal details; all commits use the GitHub noreply address); CI green
 
 ## In progress
-- [ ] Nothing mid-edit. Working tree clean at `77013eb` before this handoff edit.
+- [ ] Nothing mid-edit. Working tree clean at `c180b7e` before this handoff edit.
 
 ## Next up
-1. **Exam dates the syllabus leaves open** ("exam period"): add them to `input_requests` so the student can enter the
+1. **Run the agents once on real data** (paid, ~3-4 Gemini calls per question, only with the student's OK): check the
+   answers against the dashboards, which show the same tool numbers.
+2. **Exam dates the syllabus leaves open** ("exam period"): add them to `input_requests` so the student can enter the
    date and `course_view.plan` schedules review (today the plan skips exams without a date).
-2. **Syllabus extraction eval** (`/llm-eval`): Canvas group weights are a free answer key for weighted courses;
+3. **Syllabus extraction eval** (`/llm-eval`): Canvas group weights are a free answer key for weighted courses;
    hand-label the points-only ones; report misses and rejects next to successes.
-3. **Refresh path**: run `scripts.ingest_canvas` with a real read-only token; re-run the PrairieLearn collector and
+4. **Refresh path**: run `scripts.ingest_canvas` with a real read-only token; re-run the PrairieLearn collector and
    `scripts.crawl_site <CODE>`; then `scripts.syllabus_flow <CODE> --recheck` and `scripts.export_dashboard`.
-4. **Quiz generation + eval** from practice exams that ship with answer keys (cited questions, Python marking).
-5. Optional cited LLM summaries on top of the extracted note outlines.
+5. **Quiz generation + eval** from practice exams that ship with answer keys (cited questions, Python marking).
+6. Optional cited LLM summaries on top of the extracted note outlines.
 
 ## Blockers / open questions
 - `CanvasAPI` has only been tested against a fake server (needs the student's token in `.env`).
@@ -51,6 +55,8 @@ progress, notes, a plan and every deadline, deterministically, on a dashboard an
 - GitHub still serves one orphaned pre-rewrite commit by exact SHA (not on any branch); only GitHub Support can purge it.
 
 ## Decisions (newest first)
+- 2026-11-24 Status wording lives in Python (`STATUS_LABELS`) and ships in the JSON contract. **Why:** two UIs must
+  never word the same status differently.
 - 2026-11-24 Orbit UI built in-repo instead of Lovable; served on 127.0.0.1 only. (ADR-013)
 - 2026-11-24 Repo made public; history rewritten first (noreply author, no personal terms) and force-pushed. **Why:** a
   portfolio repo must not expose the student's email, school or results. Personal checks read terms from `data/`.
@@ -65,7 +71,8 @@ progress, notes, a plan and every deadline, deterministically, on a dashboard an
 - 2026-11-23 Grade engine reproduces Canvas rules, checked against Canvas totals. (ADR-003)
 
 ## Verification status
-- Tests: 118 passing, `.venv/bin/python -m pytest -q`, 2026-11-24 (also on a fresh copy with a new venv); CI green on `77013eb`
+- Tests: 119 passing, `.venv/bin/python -m pytest -q`, 2026-11-24; CI green on `c180b7e`
+- Dashboards: Orbit (all 30 course pages) and Streamlit checked by hand on real data in Chromium, 2026-11-24
 - Grade engine: matches Canvas's own totals wherever Canvas shows them; other courses hand-checked
 - Live: syllabus extraction (gemini-3.8-flash, 2 calls per course) reviewed by hand; agent smoke questions grounded
 - Evals: no scored eval yet
