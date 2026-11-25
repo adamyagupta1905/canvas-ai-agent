@@ -282,7 +282,7 @@ function deadlines(c) {
       h("td", {}, fmtWhen(d.when), h("div", { class: "muted" }, daysText(d.days_left))),
       h("td", {}, d.what),
       h("td", { class: "num" }, d.pct_of_grade === null ? "—" : `${d.pct_of_grade}%`),
-      h("td", {}, h("span", { class: "chip" }, d.status)),
+      h("td", {}, h("span", { class: "chip" }, d.status_label || d.status)),
       h("td", { class: "muted" }, d.sources.join(", ")))))))));
 }
 

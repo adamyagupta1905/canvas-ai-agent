@@ -42,6 +42,11 @@ now = (datetime.fromisoformat(json.loads(_meta.read_text())["as_of"]) if _meta.e
        else datetime.now(timezone.utc))
 
 
+def cell(x, unit: str = "%") -> str:
+    """Table cell for a number that may be missing: a dash, never the word None."""
+    return "—" if x is None else f"{x:g}{unit}"
+
+
 def pct(x) -> str:
     return "n/a" if x is None else f"{x:.2f}%"
 
@@ -88,18 +93,23 @@ def all_courses_page() -> None:
         "Graded so far %": st.column_config.ProgressColumn(min_value=0, max_value=100, format="%.0f%%")})
 
     st.subheader("Next 14 days, all courses")
-    upcoming = []
+    upcoming, overdue = [], []
     for code in courses:
         for d in cv.deadlines(store, code, now):
             if d["when"] <= now + timedelta(days=14) and d["status"] not in ("awaiting_grade", "not_yet_available"):
-                upcoming.append({"When": d["when"].strftime("%a %b %d %H:%M") if d["has_time"] else d["when"].strftime("%a %b %d"),
-                                 "_sort": d["when"], "Course": code, "What": d["what"], "% of grade": d["pct_of_grade"],
-                                 "From": ", ".join(d["sources"]), "Status": d["status"].replace("_", " ")})
+                row = {"When": d["when"].strftime("%a %b %d %H:%M") if d["has_time"] else d["when"].strftime("%a %b %d"),
+                       "_sort": d["when"], "Course": code, "What": d["what"], "% of grade": cell(d["pct_of_grade"]),
+                       "From": ", ".join(d["sources"]), "Status": d["status_label"]}
+                (overdue if d["when"] < now else upcoming).append(row)  # past items are not "next 14 days"
     if upcoming:
         df = pd.DataFrame(sorted(upcoming, key=lambda r: r["_sort"])).drop(columns="_sort")
         st.dataframe(df, hide_index=True, use_container_width=True)
     else:
         st.caption("Nothing due in the next 14 days.")
+    if overdue:
+        st.subheader("Overdue, not submitted")
+        st.dataframe(pd.DataFrame(sorted(overdue, key=lambda r: r["_sort"])).drop(columns="_sort"),
+                     hide_index=True, use_container_width=True)
 
     asks = [r for f in SYL.glob("*.facts.json") for r in json.loads(f.read_text()).get("input_requests", [])]
     if asks:
@@ -258,8 +268,9 @@ def grades_tab(code: str, course: dict, facts: dict | None) -> None:
             "Component": c["component"], "Weight %": c["syllabus_weight"],
             "Graded / expected": f"{c['scored']} / {c['expected_items'] if c['expected_items'] is not None else c['items_in_canvas']}",
             "Drop lowest": c["drop_syllabus"] if c["drop_syllabus"] is not None else "-",
-            "Average now": c["avg_syllabus_rules"],
-            "Adds to grade": round(c["syllabus_weight"] * c["avg_syllabus_rules"] / 100, 2) if c["avg_syllabus_rules"] is not None else None,
+            "Average now": cell(c["avg_syllabus_rules"]),
+            "Adds to grade": cell(round(c["syllabus_weight"] * c["avg_syllabus_rules"] / 100, 2)
+                                  if c["avg_syllabus_rules"] is not None else None, " pts"),
         } for c in checks]), hide_index=True, use_container_width=True)
         for c in checks:
             with st.expander(f"{c['component']} ({c['syllabus_weight']:g}%) · average {pct(c['avg_syllabus_rules'])}"):
@@ -278,13 +289,13 @@ def grades_tab(code: str, course: dict, facts: dict | None) -> None:
                                        for m in pending]), hide_index=True)
     else:
         s = grade_summary(code, course)
-        st.dataframe(pd.DataFrame([{"Component": g.name, "Weight %": g.weight, "Counted": g.kept, "Average": g.pct,
+        st.dataframe(pd.DataFrame([{"Component": g.name, "Weight %": g.weight, "Counted": g.kept, "Average": cell(g.pct),
                                     "Dropped": ", ".join(g.dropped)} for g in s.groups]), hide_index=True, use_container_width=True)
         st.caption("No syllabus rules for this course yet (run the syllabus flow): Canvas's setup is used.")
     st.subheader("Every item")
     rows = tracker(code, course, now)
     st.dataframe(pd.DataFrame([{"Item": r.name, "Component": r.group, "Due": r.due.strftime("%b %d") if r.due else "",
-                                "Status": r.status.replace("_", " "), "Score %": r.pct, "% of grade": r.weight_of_final,
+                                "Status": cv.status_label(r.status), "Score %": cell(r.pct), "% of grade": cell(r.weight_of_final),
                                 "Size": r.size} for r in rows]), hide_index=True, use_container_width=True, height=320)
 
 
@@ -337,8 +348,8 @@ def deadlines_tab(code: str) -> None:
         return
     st.dataframe(pd.DataFrame([{
         "When": d["when"].strftime("%a %b %d %H:%M") if d["has_time"] else d["when"].strftime("%a %b %d"),
-        "Days left": d["days_left"], "What": d["what"], "% of grade": d["pct_of_grade"],
-        "Status": d["status"].replace("_", " "), "From": ", ".join(d["sources"])} for d in ds]),
+        "Days left": d["days_left"], "What": d["what"], "% of grade": cell(d["pct_of_grade"]),
+        "Status": d["status_label"], "From": ", ".join(d["sources"])} for d in ds]),
         hide_index=True, use_container_width=True,
         column_config={"Days left": st.column_config.NumberColumn(format="%.1f")})
     st.caption("Merged from Canvas, PrairieLearn, the course website schedule and the syllabus. Times are local.")
@@ -359,8 +370,8 @@ def sources_tab(code: str, facts: dict | None) -> None:
         if summ["awaiting_grade"]:
             st.caption("Submitted, waiting for manual grading (not a zero): "
                        + ", ".join(f"{x['label']} ({x['pending_points']:g} pts)" for x in summ["awaiting_grade"]))
-        st.dataframe(pd.DataFrame([{"Label": x.label, "Title": x.title, "Kind": x.kind, "Status": x.status.replace("_", " "),
-                                    "Points": f"{x.earned:g}/{x.possible:g}" if x.possible else "", "Score %": x.pct}
+        st.dataframe(pd.DataFrame([{"Label": x.label, "Title": x.title, "Kind": x.kind, "Status": cv.status_label(x.status),
+                                    "Points": f"{x.earned:g}/{x.possible:g}" if x.possible else "", "Score %": cell(x.pct)}
                                    for x in pl]), hide_index=True, use_container_width=True, height=260)
     site_dir = DATA / "sites" / code
     if REAL and (site_dir / "manifest.json").exists():

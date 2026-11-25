@@ -124,7 +124,8 @@ def export(now: datetime | None = None, data_dir: Path = DATA) -> dict:
                       for i, s in enumerate(cv.notes(store, code, now))],
             "plan": {k: v for k, v in cv.plan(store, code, now).items() if k in ("weak_areas", "days")},
             "deadlines": [{"when": d["when"].isoformat(), "what": d["what"], "pct_of_grade": d["pct_of_grade"],
-                           "status": d["status"], "sources": d["sources"], "days_left": d["days_left"]}
+                           "status": d["status"], "status_label": d["status_label"], "sources": d["sources"],
+                           "days_left": d["days_left"]}
                           for d in cv.deadlines(store, code, now)],
             "sources": _sources(store, code, facts),
         })

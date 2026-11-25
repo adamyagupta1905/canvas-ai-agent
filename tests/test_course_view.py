@@ -135,5 +135,15 @@ def test_dashboard_export_matches_the_ui_contract(tmp_path):
     assert set(c["grade"]) >= {"current_pct", "weight_graded_pct", "floor_pct", "ceiling_pct", "basis"}
     assert set(c["progress"]) == {"course_progress_pct", "label"} and c["progress"]["label"] == "Week 1 of 2"
     assert set(c["plan"]) == {"weak_areas", "days"}
-    assert all(set(d) == {"when", "what", "pct_of_grade", "status", "sources", "days_left"} for d in c["deadlines"])
+    assert all(set(d) == {"when", "what", "pct_of_grade", "status", "status_label", "sources", "days_left"}
+               for d in c["deadlines"])
     assert all(set(n) == {"order", "label", "title", "goals", "points", "scores", "source_url"} for n in c["notes"])
+
+
+def test_every_deadline_status_has_a_plain_label(tmp_path):
+    """UIs show the label, never a raw code like 'open_not_done'."""
+    assert cv.status_label("open_not_done") == "open, not done"
+    assert cv.status_label("past_due_unsubmitted") == "overdue, not submitted"
+    assert cv.status_label("some_new_status") == "some new status"  # unknown codes still read as words
+    ds = cv.deadlines(make_store(tmp_path), "CS101", NOW)
+    assert ds and all(d["status_label"] == cv.status_label(d["status"]) and "_" not in d["status_label"] for d in ds)

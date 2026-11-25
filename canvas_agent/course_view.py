@@ -235,6 +235,18 @@ def notes(store: Store, code: str, now: datetime) -> list[dict]:
 
 
 # ---- deadlines ----------------------------------------------------------------------------------------------
+STATUS_LABELS = {  # one wording for every UI; keys are the Canvas tracker, PrairieLearn and schedule statuses
+    "upcoming": "to do", "past_due_unsubmitted": "overdue, not submitted", "awaiting_grade": "submitted, awaiting grade",
+    "open_not_done": "open, not done", "not_started": "not started", "not_yet_available": "not open yet",
+    "partially_graded": "partly graded", "score_hidden": "score hidden", "graded": "graded",
+    "closed_no_credit": "closed, no credit", "no_points": "no points", "exam": "exam", "scheduled": "scheduled",
+}
+
+
+def status_label(status: str) -> str:
+    return STATUS_LABELS.get(status, status.replace("_", " "))
+
+
 def deadlines(store: Store, code: str, now: datetime, include_past_days: int = 0) -> list[dict]:
     """Merged from every source. Same day + matching key (e.g. 'D4' and 'DELIV4') = one entry with both sources."""
     from canvas_agent.website import find_doc, schedule_rows
@@ -295,6 +307,7 @@ def deadlines(store: Store, code: str, now: datetime, include_past_days: int = 0
         m.pop("source", None)
         m["when"] = m["when"].astimezone(local_tz())
         m["days_left"] = round((m["when"] - now).total_seconds() / 86400, 1)
+        m["status_label"] = status_label(m["status"])
     return merged
 
 
